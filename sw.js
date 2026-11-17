@@ -1,11 +1,12 @@
 // Service worker del Ricettario.
-// - Pagina (index.html): prima la rete, così ogni apertura con internet mostra l'ultima versione;
-//   senza rete usa la copia salvata.
-// - Tutto il resto (icone, Tailwind, font, Font Awesome): prima la copia salvata, aggiornata in background.
+// - File nostri (pagina, tailwind.css, icone, manifest): prima la rete, così ogni apertura con internet
+//   mostra l'ultima versione; senza rete usa la copia salvata.
+// - File esterni (Google Fonts, Font Awesome): prima la copia salvata, aggiornata in background.
 
-const CACHE = 'ricettario-v1';
+const CACHE = 'ricettario-v2';
 const PRECACHE = [
   './',
+  'tailwind.css',
   'manifest.json',
   'icons/icon.svg',
   'icons/icon-192.png',
@@ -29,21 +30,27 @@ self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (req.method !== 'GET') return;
 
-  if (req.mode === 'navigate') {
-    // 'no-cache' = chiedi sempre al server se la pagina è cambiata (evita la cache HTTP di 10 minuti di GitHub Pages).
+  // File nostri (pagina, tailwind.css, icone, manifest): prima la rete, così pagina e stili
+  // arrivano sempre aggiornati insieme. La pagina è salvata sempre con la chiave './'.
+  const isPage = req.mode === 'navigate';
+  if (isPage || new URL(req.url).origin === self.location.origin) {
+    const key = isPage ? './' : req.url;
+    // 'no-cache' = chiedi sempre al server se il file è cambiato (evita la cache HTTP di 10 minuti di GitHub Pages).
     event.respondWith(
       fetch(req.url, { cache: 'no-cache' })
         .then((res) => {
           if (res.ok) {
             const copy = res.clone();
-            caches.open(CACHE).then((cache) => cache.put('./', copy));
+            caches.open(CACHE).then((cache) => cache.put(key, copy));
           }
           return res;
         })
-        .catch(() => caches.match('./'))
+        .catch(() => caches.match(key))
     );
     return;
   }
+
+  // File esterni (font, Font Awesome): prima la copia salvata, aggiornata in background.
 
   event.respondWith(
     caches.match(req).then((cached) => {
