@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="it" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ricettario Artigianale</title>
+  <!-- App installabile (PWA) -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#92400e">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          },
+          colors: {
+            amber: {
+              50: '#fffbeb',
+              100: '#fef3c7',
+              500: '#f59e0b',
+              600: '#d97706',
+              700: '#b45309',
+              800: '#92400e',
+              900: '#78350f',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Transizioni ed effetti personalizzati */
+    .recipe-transition {
+      transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(156, 163, 175, 0.4);
+      border-radius: 3px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(156, 163, 175, 0.7);
+    }
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      .print-area {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-stone-50 dark:bg-stone-900 text-stone-800 dark:text-stone-100 font-sans h-full flex flex-col md:flex-row overflow-hidden antialiased transition-colors duration-200">
+
+  <!-- BOTTONE MOBILE MENU -->
+  <div class="md:hidden no-print bg-amber-800 dark:bg-stone-950 text-white p-4 flex justify-between items-center z-50 border-b border-amber-900">
+    <div class="flex items-center space-x-3">
+      <i class="fa-solid fa-utensils text-amber-400 text-xl"></i>
+      <span class="font-serif font-bold text-lg tracking-wide">RICETTARIO</span>
+    </div>
+    <button id="mobileMenuBtn" class="p-2 rounded-lg bg-amber-900 dark:bg-stone-800 hover:bg-amber-700 text-white focus:outline-none">
+      <i class="fa-solid fa-bars text-xl"></i>
+    </button>
+  </div>
+
+  <!-- SIDEBAR SINISTRA -->
+  <aside id="sidebar" class="no-print fixed inset-y-0 left-0 z-40 w-80 bg-white dark:bg-stone-950 border-r border-stone-200 dark:border-stone-800 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col h-full md:relative">
+    
+    <!-- Header Sidebar -->
+    <div class="p-5 border-b border-stone-100 dark:border-stone-800 bg-stone-50/50 dark:bg-stone-900/50">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-600 flex items-center justify-center text-white shadow-md shadow-amber-600/30">
+            <i class="fa-solid fa-book-open text-lg"></i>
+          </div>
+          <div>
+            <h1 class="font-serif font-bold text-xl leading-tight text-stone-900 dark:text-white">Il Ricettario</h1>
+            <p class="text-xs text-stone-500 dark:text-stone-400">Guida alle Preparazioni</p>
+          </div>
+        </div>
+        <button id="closeSidebarBtn" class="md:hidden text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 p-1">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <!-- Barra di Ricerca -->
+      <div class="relative mb-3">
+        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-sm"></i>
+        <input type="text" id="searchInput" placeholder="Cerca ricetta o ingrediente..." class="w-full pl-9 pr-8 py-2 text-sm bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 dark:text-white placeholder-stone-400 dark:placeholder-stone-500 transition-all">
+        <button id="clearSearch" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 text-xs">
+          <i class="fa-solid fa-circle-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Filtri Categoria Veloci -->
+      <div class="flex items-center space-x-1.5 overflow-x-auto custom-scrollbar pb-1 text-xs" id="categoryFilterContainer">
+        <button data-cat="all" class="cat-filter-btn px-2.5 py-1 rounded-full bg-amber-600 text-white font-medium shadow-sm transition-all whitespace-nowrap">
+          Tutti
+        </button>
+        <button data-cat="Lievitati Salati" class="cat-filter-btn px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-amber-100 dark:hover:bg-amber-900/40 font-medium transition-all whitespace-nowrap">
+          Salati
+        </button>
+        <button data-cat="Panificazione" class="cat-filter-btn px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-amber-100 dark:hover:bg-amber-900/40 font-medium transition-all whitespace-nowrap">
+          Pane
+        </button>
+        <button data-cat="Dolci & Biscotti" class="cat-filter-btn px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-amber-100 dark:hover:bg-amber-900/40 font-medium transition-all whitespace-nowrap">
+          Dolci
+        </button>
+        <button data-cat="Fitness & Wellness" class="cat-filter-btn px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-amber-100 dark:hover:bg-amber-900/40 font-medium transition-all whitespace-nowrap">
+          Fitness
+        </button>
+      </div>
+    </div>
+
+    <!-- Lista Ricette Raggruppata per Categorie -->
+    <nav class="flex-1 overflow-y-auto p-3 space-y-4 custom-scrollbar" id="recipeList">
+      <!-- Generato via JS con Sottogruppi -->
+    </nav>
+
+    <!-- Footer Sidebar / Controlli Generali -->
+    <div class="p-4 border-t border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900/50 flex justify-between items-center">
+      <span class="text-xs text-stone-500 dark:text-stone-400 font-medium" id="recipeCount">7 Ricette</span>
+      <div class="flex items-center space-x-1">
+        <button id="darkModeToggle" title="Cambia Tema" class="p-2 rounded-lg text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-800 transition-colors">
+          <i class="fa-solid fa-moon dark:hidden"></i>
+          <i class="fa-solid fa-sun hidden dark:inline"></i>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- OVERLAY MOBILE -->
+  <div id="mobileOverlay" class="fixed inset-0 bg-stone-900/50 backdrop-blur-sm z-30 hidden md:hidden"></div>
+
+  <!-- AREA CONTENUTO PRINCIPALE -->
+  <main class="flex-1 h-full overflow-y-auto custom-scrollbar flex flex-col bg-stone-50 dark:bg-stone-900">
+    
+    <!-- Toolbar Superiore / Controlli della Ricetta -->
+    <header class="no-print bg-white/80 dark:bg-stone-950/80 backdrop-blur-md sticky top-0 z-20 border-b border-stone-200 dark:border-stone-800 px-6 py-3 flex justify-between items-center">
+      <div class="flex items-center space-x-2 text-sm text-stone-500 dark:text-stone-400">
+        <i class="fa-solid fa-utensils text-amber-600"></i>
+        <span id="breadcrumbCategory" class="hidden sm:inline">Ricettario</span>
+        <span class="hidden sm:inline">/</span>
+        <span id="breadcrumbTitle" class="font-medium text-stone-800 dark:text-stone-200 truncate max-w-[200px] sm:max-w-xs">Seleziona una ricetta</span>
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <!-- Controlli Dimensione Font -->
+        <div class="flex items-center bg-stone-100 dark:bg-stone-800 rounded-lg p-1 border border-stone-200 dark:border-stone-700">
+          <button id="decreaseFont" title="Riduci Testo" class="w-7 h-7 flex items-center justify-center text-xs font-bold text-stone-600 dark:text-stone-300 hover:bg-white dark:hover:bg-stone-700 rounded transition-colors">A-</button>
+          <button id="resetFont" title="Dimensione Normale" class="w-7 h-7 flex items-center justify-center text-xs font-semibold text-stone-600 dark:text-stone-300 hover:bg-white dark:hover:bg-stone-700 rounded transition-colors">100%</button>
+          <button id="increaseFont" title="Ingrandisci Testo" class="w-7 h-7 flex items-center justify-center text-xs font-bold text-stone-600 dark:text-stone-300 hover:bg-white dark:hover:bg-stone-700 rounded transition-colors">A+</button>
+        </div>
+
+        <!-- Tasto Stampa -->
+        <button id="printBtn" title="Stampa Ricetta" class="flex items-center space-x-2 px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-sm font-medium shadow-sm transition-colors">
+          <i class="fa-solid fa-print"></i>
+          <span class="hidden md:inline">Stampa</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Contenitore della Ricetta -->
+    <div id="recipeContainer" class="flex-1 p-4 md:p-10 max-w-5xl mx-auto w-full recipe-transition print-area">
+      <!-- Il contenuto viene iniettato dinamicamente da JavaScript -->
+    </div>
+
+  </main>
+
+  <script>
+    // DATABASE RICETTE ESTRATTO DAL DOCUMENTO
+    const recipes = [
+      {
+        id: "pizza-napoletana",
+        title: "La Pizza Napoletana Classica",
+        subtitle: "Metodo Massa a Freddo",
+        category: "Lievitati Salati",
+        icon: "fa-pizza-slice",
+        yield: "3 panetti da 230 g (Diametro 28 cm)",
+        equipment: "Macchina del pane Hitachi HB-B100, Fornetto Ariete Pizzeria 927 Doppio",
+        tags: ["Idratazione 62%", "Massa a Freddo", "Lunga Lievitazione"],
+        ingredients: [
+          {
+            section: "Per l'impasto",
+            items: [
+              "<strong>Farina Garofalo W350:</strong> 250 g <em>(La forza)</em>",
+              "<strong>Farina Caputo Pasticceria (o Decò 00 debole):</strong> 160 g <em>(La scioglievolezza)</em>",
+              "<strong>Acqua fredda di frigo:</strong> 255 ml <em>(Idratazione 62%)</em>",
+              "<strong>Lievito di birra fresco:</strong> 1,2 g <em>(Pochissimo, per una lievitazione lenta)</em>",
+              "<strong>Sale fino marino:</strong> 11 g",
+              "<strong>Olio Extravergine d'Oliva (EVO):</strong> 8 g <em>(Aggiunto a metà, per struttura e profumo)</em>"
+            ]
+          },
+          {
+            section: "Per il condimento (Per 2 Pizze)",
+            items: [
+              "<strong>Fior di latte:</strong> Tagliato a listarelle sottili e lasciato scolare in frigo per almeno 4 ore.",
+              "<strong>Pomodori allungati (es. Roma/San Marzano):</strong> 2 grandi.",
+              "<strong>Pomodorini a grappolo/ciliegino:</strong> 6 o 7.",
+              "<strong>Sale, Olio EVO di alta qualità, Basilico fresco.</strong>"
+            ]
+          }
+        ],
+        steps: [
+          {
+            title: "FASE 1: L'IMPASTO (La Formazione del Glutine)",
+            items: [
+              "<strong>Preparazione a secco:</strong> In una ciotola, mescola la Garofalo e la Caputo con un cucchiaio per miscelare le proteine.",
+              "<strong>I liquidi:</strong> Versa i 255 ml di acqua fredda nel cestello della Hitachi. Sbriciola l'1,2 g di lievito e fallo sciogliere con un dito.",
+              "<strong>Chiusura:</strong> Copri tutta l'acqua con il mix di farine. Metti gli 11 g di sale in un angolo, sopra la farina.",
+              "<strong>L'azione:</strong> Avvia il programma <strong>SOLO IMPASTO</strong> della Hitachi.",
+              "<strong>L'Olio:</strong> Dopo 6-7 minuti, quando l'acqua è assorbita e la massa è grezza, versa gli 8 g di olio EVO a filo lungo le pareti.",
+              "<strong>Estrazione:</strong> Dopo 15-18 minuti totali, appena la palla è liscia e si stacca dai bordi, ferma la macchina e tira fuori l'impasto per non scaldarlo."
+            ]
+          },
+          {
+            title: "FASE 2: MATURAZIONE IN MASSA (Il Segreto della Digeribilità)",
+            items: [
+              "<strong>Le pieghe:</strong> Rovescia l'impasto sul banco (senza farina). Fai 3-4 pieghe portando i lembi verso il centro e pirlalo (arrotolalo) fino ad avere una sfera tesa.",
+              "<strong>L'Innesco (1 Ora):</strong> Ungi appena una ciotola stretta e alta. Inserisci la palla, sigilla ermeticamente con pellicola trasparente e lascia a temperatura ambiente per <strong>1 ora esatta</strong>. Questo sveglia dolcemente i lieviti.",
+              "<strong>Il Letargo (18-20 Ore):</strong> Sposta la ciotola nel ripiano più basso del frigorifero. Qui il lievito frena, mentre gli enzimi 'predigeriscono' la farina."
+            ]
+          },
+          {
+            title: "FASE 3: STAGLIO E APPRETTO (4 ore prima della cottura)",
+            items: [
+              "<strong>Taglio a freddo:</strong> Tira fuori la ciotola dal frigo, rovescia la massa sul banco e tagliala subito in <strong>3 pezzi esatti da 230 g</strong> (usa la bilancia!).",
+              "<strong>La Pirlatura a sfera:</strong> Prendi ogni pezzo, porta i bordi esterni verso il centro per 4-5 volte a raggiera (creando un fagottino). Capovolgi il panetto con la chiusura verso il banco e rotealo con le mani a coppa per tendere la superficie in una 'pelle' liscia.",
+              "<strong>Il Risveglio:</strong> Spolvera di semola una teglia, adagia i panetti distanziati e sigilla benissimo con pellicola. Lasciali nel forno spento per <strong>4 ore</strong>. Sfruttando il clima di Catania, la temperatura ambiente è perfetta per farli raddoppiare in modo naturale ed equilibrato."
+            ]
+          },
+          {
+            title: "FASE 4: LA SALSA SARTORIALE (Zero Frullatore)",
+            items: [
+              "Sbollenta i 2 pomodori grandi per 30 secondi in acqua, poi spellali, tagliali ed elimina acqua e semi interni.",
+              "Unisci nella ciotola la polpa dei grandi e i 6-7 pomodorini interi lavati.",
+              "Schiaccia tutto a mano o con una forchetta.",
+              "<strong>Il Trucco del colino:</strong> Passa il ricavato in un colino a maglia stretta per eliminare l'acqua in eccesso e i fastidiosi semini dei pomodorini, recuperando solo la polpa ricca.",
+              "Condisci a crudo con un pizzico di sale, un filo d'olio EVO e basilico spezzettato a mano."
+            ]
+          },
+          {
+            title: "FASE 5: LA STESURA (Ammaccatura)",
+            items: [
+              "<strong>No mattarello, no pugni:</strong> Prepara un mucchio di semola rimacinata sul banco. Preleva il panetto con delicatezza e appoggialo sulla semola.",
+              "Usa i polpastrelli: parti dal centro e spingi l'aria verso i bordi, creando un cerchio a 1,5 cm dal margine (il tuo cornicione).",
+              "Allarga delicatamente la pasta ruotandola fino a raggiungere i <strong>28 cm di diametro</strong>. Il centro sarà sottile, il bordo gonfio.",
+              "<strong>Lo Schiaffo:</strong> Solleva il disco e passalo da una mano all'altra per far cadere TUTTA la semola in eccesso dal fondo."
+            ]
+          },
+          {
+            title: "FASE 6: COTTURA NELL'ARIETE DOPPIO (L'Hacking del Termostato)",
+            items: [
+              "<strong>Il Preriscaldamento:</strong> Accendi il fornetto a livello 5 (massimo) per almeno 25 minuti.",
+              "<strong>La Sicurezza sul Fondo:</strong> Se la pietra superiore è rovente da troppo tempo, passaci sopra uno straccio leggermente umido in un lampo prima di infornare, così abbassi i gradi superficiali e non bruci il centro della pizza.",
+              "<strong>Il Trucco della Resistenza (Fondamentale):</strong> Mentre stendi la pizza, abbassa la manopola a 4 per far spegnere la spia. Stendi e condisci rapidamente. Un istante prima di far scivolare la pizza dalla pala alla pietra, <strong>rimetti la manopola a 5</strong>. La spia si accenderà e la resistenza superiore diventerà rosso fuoco.",
+              "<strong>La Cottura:</strong> Inforna a resistenza accesa. L'urto termico dall'alto farà esplodere il cornicione.",
+              "<strong>La Rotazione:</strong> Dopo 60-80 secondi apri, ruota la pizza di 180° e richiudi. Totale cottura: circa 2,5 - 3 minuti."
+            ]
+          }
+        ]
+      },
+      {
+        id: "pane-tramezzino",
+        title: "Pane Bianco da Tramezzino",
+        subtitle: "Pancarrè al Burro e Latte",
+        category: "Panificazione",
+        icon: "fa-bread-slice",
+        yield: "1 pagnotta a cassetta da circa 850 g",
+        equipment: "Macchina del pane Hitachi HB-B100",
+        tags: ["Soffice", "Crosta Finissima", "Anti-Spreco"],
+        ingredients: [
+          {
+            section: "Dosi Precise",
+            items: [
+              "<strong>Farina Manitoba (o Farina 0 forte ~13% proteine):</strong> 350 g <em>(Fornisce la struttura alveolata ed elastica)</em>",
+              "<strong>Farina Tipo 00 debole:</strong> 150 g <em>(Ammorbidisce la maglia glutinica ed evita l'effetto gommoso)</em>",
+              "<strong>Latte intero fresco:</strong> 180 ml (a temperatura ambiente o leggermente fresco)",
+              "<strong>Acqua fresca:</strong> 140 ml",
+              "<strong>Burro di alta qualità (a pomata / morbido):</strong> 40 g",
+              "<strong>Zucchero semolato:</strong> 15 g",
+              "<strong>Miele d'acacia:</strong> 10 g <em>(Trattiene l'umidità nella mollica nei giorni successivi)</em>",
+              "<strong>Sale fino:</strong> 9 g (circa 1 cucchiaino scarso)",
+              "<strong>Lievito di birra fresco:</strong> 12 g <em>(oppure 4 g di lievito di birra secco in granuli)</em>"
+            ]
+          }
+        ],
+        steps: [
+          {
+            title: "1. Disposizione degli Ingredienti nel Cestello",
+            items: [
+              "<strong>I Liquidi al Fondo:</strong> Versa nel cestello dell'Hitachi l'acqua fresca, il latte intero e il miele.",
+              "<strong>Lo Scudo di Farina:</strong> Setaccia insieme le due farine (Manitoba e 00) e versale sopra i liquidi, coprendoli interamente.",
+              "<strong>La Separazione di Sale e Zucchero:</strong> Metti lo zucchero in un angolo del cestello sopra la farina e il sale nell'angolo opposto. <em>(Il sale non deve mai andare a contatto diretto con il lievito all'inizio)</em>.",
+              "<strong>Il Lievito:</strong> Crea un piccolo incavo al centro della farina (senza raggiungere il liquido sottostante) e sgrana/sbriciola il lievito di birra fresco."
+            ]
+          },
+          {
+            title: "2. Impostazione della Macchina",
+            items: [
+              "<strong>Programma:</strong> Premi il tasto <strong>PANIFICAZIONE</strong> e seleziona <strong>NORMALE</strong> (primo LED in basso a sinistra).",
+              "<strong>Doratura:</strong> Premi <strong>DORATURA PANE</strong> e seleziona <strong>CHIARA</strong> (LED in alto a sinistra). <em>Fondamentale per mantenere la crosta finissima, morbida e non bruciata.</em>",
+              "<strong>Avvio:</strong> Premi <strong>START</strong>."
+            ]
+          },
+          {
+            title: "3. Il Trucco dell'Inserimento del Burro (A 5-10 Minuti dall'Avvio)",
+            items: [
+              "Durante il primo impasto (o quando la pala riparte dopo il preriscaldamento), apri il coperchio <strong>senza premere nessun tasto</strong>.",
+              "Aggiungi i 40 g di burro morbido a tocchetti al centro dell'impasto.",
+              "<strong>Aiuto d'angolo:</strong> Con una spatola in silicone, dai una delicata spinta alla farina rimasta eventualmente attaccata agli angoli del cestello verso il centro (senza toccare la pala in movimento).",
+              "Richiudi il coperchio e lascia lavorare la macchina."
+            ]
+          },
+          {
+            title: "FASE CRUCIALE: IL RAFFREDDAMENTO 'ANTI-CROSTA'",
+            items: [
+              "<strong>Sformatura Immediata:</strong> Non appena la Hitachi suona il fine cottura, premi <strong>OFF</strong>, indossa i guanti ed estrai *subito* il pane dal cestello, capovolgendolo su una griglia per dolci/pane. <em>(Se lasci il pane nel cestello, il vapore condensa sul fondo rendendolo molliccio)</em>.",
+              "<strong>Sigillatura dell'Umidità:</strong> Avvolgi la pagnotta bollente in un foglio di <strong>carta forno</strong> (crea la camera di vapore). Inserisci il pane avvolto dentro un <strong>sacchetto di carta per alimenti</strong> (tipo sacchetto del pane da panificio) e ripiega la chiusura.",
+              "Lascia riposare il pacchetto sopra la griglia per almeno 2-3 ore. Il vapore interno rimarrà intrappolato e trasformerà la crosta esterna in una pellicola finissima e morbida."
+            ]
+          }
+        ],
+        chefTips: [
+          "<strong>Il Taglio:</strong> Taglia il pane solo quando è completamente a temperatura ambiente (meglio ancora dopo 4-6 ore di riposo). Usa un coltello a lama seghettata lunga senza esercitare troppa pressione, lasciando scorrere la lama.",
+          "<strong>La Rifilatura:</strong> Con il coltello rimuovi i 4 bordi sottili esterni. Taglia la mollica rimanente a fette da circa 1 cm - 1,2 cm di spessore."
+        ]
+      },
+      {
+        id: "biscotti-frolla",
+        title: "Biscotti di Frolla Burro e Limone",
+        subtitle: "Scioglievolezza Sablé Artigianale",
+        category: "Dolci & Biscotti",
+        icon: "fa-cookie",
+        yield: "Circa 25-30 biscotti",
+        equipment: "Mattarello, Fogli di Carta Forno, Stampo 5cm",
+        tags: ["Frolla Sablé", "Aroma Limone", "Riposo Lungo"],
+        ingredients: [
+          {
+            section: "Ingredienti",
+            items: [
+              "<strong>Farina 00 debole (Proteine 9-10%):</strong> 310 g",
+              "<strong>Amido di mais (Maizena):</strong> 37 g",
+              "<strong>Burro di alta qualità (freddissimo di frigo):</strong> 200 g",
+              "<strong>Zucchero a velo:</strong> 125 g",
+              "<strong>Tuorli d'uovo grandi:</strong> 2 (più un goccio d'albume solo se necessario)",
+              "<strong>Limoni biologici:</strong> Scorza grattugiata di 2 limoni grandi + 20 ml (circa 1 cucchiaio abbondante) di succo filtrato",
+              "<strong>Sale fino:</strong> 1 pizzico generoso"
+            ]
+          }
+        ],
+        steps: [
+          {
+            title: "Procedimento Passo-Passo",
+            items: [
+              "<strong>Aromatizzazione:</strong> In una ciotolina, strofina la scorza di limone con lo zucchero a velo usando le punte delle dita per estrarre gli oli essenziali.",
+              "<strong>Sabbiatura:</strong> In una ciotola capiente, unisci farina, maizena e sale. Aggiungi il burro freddo a cubetti e strofinalo rapidamente con la farina usando le punte delle dita, fino a ottenere una 'sabbia' omogenea (senza pezzetti di burro visibili).",
+              "<strong>Unione dei liquidi:</strong> Aggiungi lo zucchero aromatizzato, i tuorli e il succo di limone.",
+              "<strong>Impasto breve:</strong> Compatta l'impasto a mano lo stretto necessario per formare un panetto. La consistenza corretta non deve essere elastica: se provi ad allungarlo deve strapparsi.",
+              "<strong>Riposo lungo:</strong> Avvolgi il panetto con 2-3 giri di pellicola trasparente per non farlo asciugare né assorbire odori. Fai riposare in frigorifero per almeno 2 ore (ideale fino a 20 ore)."
+            ]
+          },
+          {
+            title: "Formatura e Decorazione (Doppia Variante)",
+            items: [
+              "<strong>Stesura:</strong> Togli il panetto dal frigo 15-20 minuti prima di lavorarlo per farlo tornare plastico. Stendilo a uno spessore di 6 mm su un piano infarinato o tra due fogli di carta forno. Taglia i biscotti tondi (diametro consigliato 5 cm).",
+              "<strong>Finitura Muscovado (Variante 1):</strong> Prima di infornare, premi leggermente la parte superiore di metà dei biscotti crudi nello zucchero Muscovado (o semolato).",
+              "<strong>Riposto termico (Shock):</strong> Metti la teglia con i biscotti tagliati in frigo per 15 minuti prima di infornare."
+            ]
+          },
+          {
+            title: "Cottura",
+            items: [
+              "<strong>Forno:</strong> Statico, preriscaldato a 175 °C.",
+              "<strong>Posizione:</strong> Ripiano centrale (una sola teglia alla volta).",
+              "<strong>Tempo:</strong> 12-14 minuti. I bordi devono essere dorati e la superficie chiara.",
+              "<strong>Finitura Zucchero a Velo (Variante 2):</strong> Sforna e non toccarli finché non sono completamente freddi. Una volta freddi, spolvera o intingi la superficie dei biscotti 'nudi' nello zucchero a velo."
+            ]
+          }
+        ],
+        technicalNotes: [
+          "<strong>Perché la Farina Debole:</strong> Evita lo sviluppo della maglia glutinica, garantendo un biscotto friabile e non gommoso.",
+          "<strong>Ruolo della Maizena:</strong> Taglia la forza della farina e aumenta la scioglievolezza (effetto sablé).",
+          "<strong>Gestione del Burro:</strong> Il riposo lungo (fino a 20 ore) e lo shock termico prima dell'infornata bloccano la forma dei biscotti ed evitano che si appiattiscano in cottura.",
+          "<strong>Conservazione:</strong> Si conservano fino a 2 settimane in una scatola di latta o un contenitore di vetro ben chiuso, al riparo dall'umidità."
+        ]
+      },
+      {
+        id: "pane-brioche-arancia",
+        title: "Pane Brioche all'Arancia, Miele di Zagara & Cioccolato",
+        subtitle: "Con Cannella e Gocce di Fondente",
+        category: "Lievitati Dolci",
+        icon: "fa-stroopwafel",
+        yield: "Formato grande da ~850 g",
+        equipment: "Macchina del pane Hitachi HB-B100",
+        tags: ["Miele Zagara", "Cioccolato", "Aromatico"],
+        ingredients: [
+          {
+            section: "Gli Ingredienti",
+            items: [
+              "<strong>Farina Garofalo W350 (o Manitoba Oro):</strong> 280 g <em>(Struttura alveolata e tenuta per burro e uova)</em>",
+              "<strong>Farina 00 di media forza (es. Caputo Pizzeria):</strong> 280 g <em>(Mollica soffice, setosa e non gommosa)</em>",
+              "<strong>Latte fresco intero (freddo da frigo):</strong> 250 ml",
+              "<strong>Uova medie intere (fredde da frigo):</strong> 2 (circa 100-110 g complessivi)",
+              "<strong>Miele di Zagara d'Arancio:</strong> 30 g <em>(Umettante naturale: trattiene l'umidità per giorni)</em>",
+              "<strong>Zucchero semolato:</strong> 60 g",
+              "<strong>Estratto naturale di vaniglia (o bacca):</strong> 1 cucchiaino",
+              "<strong>Scorza grattugiata di arancia biologica:</strong> la scorza di 2 arance non trattate",
+              "<strong>Cannella in polvere:</strong> 1 cucchiaino raso",
+              "<strong>Burro di alta qualità (a pomata, 82% grassi):</strong> 85 g",
+              "<strong>Lievito di birra fresco:</strong> 8 g",
+              "<strong>Sale fino:</strong> 8 g",
+              "<strong>Gocce di cioccolato fondente:</strong> 150 g <em>(In congelatore per almeno 2 ore prima dell'uso)</em>"
+            ]
+          }
+        ],
+        steps: [
+          {
+            title: "Fase 1: Preparazione e Mix Aromatico",
+            items: [
+              "<strong>Il congelatore per il cioccolato:</strong> Assicurati che i 150 g di gocce di cioccolato siano nel congelatore da almeno 2 ore. <em>Il trucco dello Chef:</em> Il cioccolato congelato non si scioglie durante i pochi secondi di impasto finale nella macchina calda, rimanendo integro dentro la mollica.",
+              "<strong>I Liquidi e gli Aromi nel Cestello:</strong> Versa direttamente nel cestello dell'Hitachi: 250 ml di latte fresco freddo, le 2 uova fredde, i 30 g di miele di zagara, i 60 g di zucchero, il cucchiaino di vaniglia, la scorza di 2 arance e gli 8 g di lievito fresco sbriciolato.",
+              "<strong>Il Primo Emulsionamento:</strong> Con un dito pulito o una spatolina, mescola delicatamente per 5 secondi per far sciogliere il miele e attivare il lievito.",
+              "<strong>I Secchi:</strong> Copri completamente i liquidi con il mix delle due farine (280 g + 280 g) setacciate insieme alla cannella. Le farine devono fare da 'scudo' sopra la parte liquida.",
+              "<strong>Il Sale:</strong> Metti gli 8 g di sale in un angolino in alto sopra la farina. <em>Regola d'oro:</em> Il sale non deve mai toccare direttamente il lievito prima dell'avvio."
+            ]
+          },
+          {
+            title: "Fase 2: Avvio e Inserimento dei Grassi nella Hitachi",
+            items: [
+              "<strong>Impostazione Programma:</strong> Seleziona il programma <strong>PANE DOLCE</strong> (o Sweet Bread). Imposta la doratura della <strong>Crosta CHIARA</strong> (Light) per evitare che gli zuccheri caramellino troppo.",
+              "<strong>L'Inserimento del Burro (Minuto 8-10 dall'avvio):</strong> Avvia il programma. Quando l'impasto ha assorbito tutta la farina e si stacca dalle pareti (circa 8-10 minuti), inizia ad aggiungere i 85 g di burro a pomata, un tocchetto alla volta.",
+              "<strong>L'Inserimento delle Gocce di Cioccolato (Minuto 33-34 dall'avvio):</strong> Imposta un timer a 33-34 minuti dall'avvio. Quando suona, apri il coperchio, versa i 150 g di gocce di cioccolato ghiacciate e richiudi subito. La macchina incorporerà le gocce negli ultimi 60-90 secondi di impasto."
+            ]
+          },
+          {
+            title: "Fase 3: Cottura e Gestione Post-Sfornata",
+            items: [
+              "<strong>Fine Cottura (Minuto 0):</strong> Appena la macchina emette il segnale acustico, premi immediatamente <strong>STOP</strong> e stacca la spina.",
+              "<strong>Il Riposo Tecnico (5 Minuti Esatti):</strong> Lascia riposare la vasca fuori dalla macchina per esattamente 5 minuti per evitare che la mollica collassi o si crei condensa.",
+              "<strong>La Sformatura:</strong> Rovescia delicatamente il cestello sopra una griglia rialzata e dai un colpo deciso al fondo.",
+              "<strong>Il Raffreddamento 'A Cupola':</strong> Copri immediatamente il pane sulla griglia con un canovaccio di cotone o lino pulito. Il canovaccio trattiene il vapore caldo ammorbidendo la crosta in modo naturale."
+            ]
+          }
+        ],
+        chefTips: [
+          "<strong>Conservazione:</strong> Una volta freddo, conserva il pane dentro un sacchetto di plastica per alimenti ben sigillato o sotto una campana per dolci (mantiene la morbidezza per 4-5 giorni).",
+          "<strong>Consiglio di Servizio:</strong> Passa una fetta nel tostapane per pochi secondi o nel microonde a 300 W per 5-6 secondi: il burro e le gocce di cioccolato si ammorbidiranno sprigionando tutti gli aromi!"
+        ]
+      },
+      {
+        id: "waffle-proteici",
+        title: "Waffle Proteici allo Yogurt Greco e Uova Intere",
+        subtitle: "Senza Zucchero con Eritritolo",
+        category: "Fitness & Wellness",
+        icon: "fa-cube",
+        yield: "Circa 4 waffle grandi (2 persone)",
+        equipment: "Bimby TM5, Tostiera/Piastra per Waffle",
+        tags: ["Proteico", "Senza Zucchero", "Bimby TM5", "Low Carb"],
+        ingredients: [
+          {
+            section: "Dosi per 4 Waffle",
+            items: [
+              "<strong>Uova intere biologiche (fresche, medie):</strong> 2 uova (circa 110 g totali)",
+              "<strong>Yogurt Greco 0%:</strong> 150 g (1 vasetto abbondante)",
+              "<strong>Farina di Farro integrale o Tipo 1:</strong> 90 g",
+              "<strong>Eritritolo:</strong> 30 g <em>(Zero calorie, zero impatto glicemico)</em>",
+              "<strong>Lievito vanigliato per dolci:</strong> 6 g (1 cucchiaino pieno)",
+              "<strong>Scorza grattugiata di 1/2 limone biologico o cannella:</strong> q.b.",
+              "<strong>Olio Extravergine d'Oliva delicato (o acqua):</strong> 10 g (1 cucchiaio)",
+              "<strong>Pizzico di sale fino:</strong> 1 g"
+            ]
+          }
+        ],
+        steps: [
+          {
+            title: "Il Procedimento Passo Passo dello Chef (Bimby TM5)",
+            items: [
+              "<strong>La polverizzazione dell'Eritritolo (Segreto n° 1):</strong> Metti l'eritritolo nel boccale asciutto del Bimby TM5. Polverizza per <strong>7 secondi a Velocità 10</strong>. Ottenere uno 'zucchero a velo' farà sì che si sciolga all'istante.",
+              "<strong>L'emulsione con uova e yogurt (Segreto n° 2):</strong> Aggiungi nel boccale le 2 uova intere, lo yogurt greco 0%, l'olio EVO e il sale. Aziona <strong>30 secondi a Velocità 4</strong> per creare una crema vellutata e ben ariosa.",
+              "<strong>Integrazione delle polveri:</strong> Aggiungi la farina di farro, il lievito e gli aromi. Lavora per <strong>20 secondi a Velocità 3.5</strong>. Raccogli con la spatola la farina dalle pareti e dai un colpo finale di <strong>5 secondi a Velocità 4</strong>. Non lavorare oltre per non sviluppare troppo glutine.",
+              "<strong>Il riposo tecnico dell'impasto (Segreto n° 3):</strong> Lascia riposare la pastella per <strong>10-15 minuti</strong> per far assorbire l'umidità alle fibre della farina.",
+              "<strong>Cottura:</strong> Preriscalda la piastra per waffle alla massima potenza e spennellala con un velo d'olio. Versa un mestolo di pastella, chiudi e cuoci per <strong>4-5 minuti</strong>. <em>Non aprire nei primi 3 minuti!</em>"
+            ]
+          }
+        ],
+        nutritionTable: {
+          title: "Scheda Nutrizionale (Per 100 g di prodotto cotto)",
+          rows: [
+            { label: "Energia (Kcal)", value: "158 kcal" },
+            { label: "Proteine", value: "9,4 g" },
+            { label: "Carboidrati", value: "18,6 g" },
+            { label: "— di cui Zuccheri", value: "1,8 g (esclusivamente naturali)" },
+            { label: "Grassi Totali", value: "4,8 g" },
+            { label: "— di cui Saturi", value: "1,2 g" },
+            { label: "— di cui Insaturi", value: "3,6 g (grassi nobili)" },
+            { label: "Fibre", value: "1,8 g" },
+            { label: "Sale", value: "0,42 g" }
+          ]
+        }
+      },
+      {
+        id: "potato-buns",
+        title: "Potato Buns da Smash Burger",
+        subtitle: "al Moscovado e Patata Rossa",
+        category: "Panificazione",
+        icon: "fa-hamburger",
+        yield: "8 panini da circa 100 g ciascuno",
+        equipment: "Friggitrice ad aria, Bimby TM5, Hitachi HB-B100, Forno Glem Gas",
+        tags: ["Maturazione Overnight", "Zero Sprechi", "Smash Burger"],
+        ingredients: [
+          {
+            section: "Gli Ingredienti Nobili",
+            items: [
+              "<strong>Farina Manitoba (W350):</strong> 320 g <em>(Maglia glutinica robusta)</em>",
+              "<strong>Farina 00 di media forza (o tipo 0):</strong> 130 g <em>(Delicatezza al morso)</em>",
+              "<strong>Patata a buccia rossa:</strong> 1 patata media (~170 g cruda con buccia, per 150 g di purea)",
+              "<strong>Latte fresco intero (freddo di frigo):</strong> 180 ml",
+              "<strong>Uovo medio fresco (freddo di frigo):</strong> 1 (~50-55 g)",
+              "<strong>Zucchero Moscovado integrale:</strong> 25 g <em>(Note di caramello e liquirizia)</em>",
+              "<strong>Miele d'Acacia o Millefiori:</strong> 10 g",
+              "<strong>Burro di centrifuga (82% grassi, a pomata):</strong> 50 g",
+              "<strong>Lievito di birra fresco:</strong> 6 g <em>(Fermentazione lenta)</em>",
+              "<strong>Sale fino:</strong> 9 g"
+            ]
+          },
+          {
+            section: "Per la Finitura e Lucidatura",
+            items: [
+              "<strong>Tuorlo d'uovo fresco:</strong> 1",
+              "<strong>Latte intero:</strong> 1 cucchiaio (15 ml)",
+              "<strong>Burro fuso (post-cottura):</strong> 15 g <em>(Effetto lucido morbido stile Martin's)</em>"
+            ]
+          }
+        ],
+        steps: [
+          {
+            title: "FASE 1: COTTURA DELLA PATATA ROSSA AL CARTOCCIO IN FRIGGITRICE AD ARIA",
+            items: [
+              "<strong>Preparazione:</strong> Lava la patata rossa (170 g) senza sbucciarla ed asciugala.",
+              "<strong>Cartoccio:</strong> Pratica 3-4 fori con una forchetta ed avvolgila strettamente in alluminio.",
+              "<strong>Cottura:</strong> Inserisci nella friggitrice ad aria a <strong>200 °C per 35-40 minuti</strong>.",
+              "<strong>Purea:</strong> Sbuccia da calda e schiacciala ottenendo 150 g di purea liscia. Fai raffreddare in frigo per 20 minuti."
+            ]
+          },
+          {
+            title: "FASE 2: MISCELAZIONE E IMPASTO (Bimby TM5 & Hitachi HB-B100)",
+            items: [
+              "<strong>Scioglimento Moscovado (Bimby):</strong> Versa nel boccale latte (180 ml), zucchero Moscovado (25 g) e miele (10 g). Aziona <strong>10 sec / Vel 3</strong> per sciogliere i grumi.",
+              "<strong>Cestello Hitachi:</strong> Versa i liquidi nel cestello dell'Hitachi, unisci l'uovo, il lievito sbriciolato, le farine e la purea di patata fredda. Metti il sale sopra in un angolo.",
+              "<strong>Impasto:</strong> Avvia il programma <strong>DOUGH</strong> (Solo Impasto). Dopo 8-10 minuti unisci il burro a pomata un pezzetto alla volta finché non viene riassorbito."
+            ]
+          },
+          {
+            title: "FASE 3: MATURAZIONE OVERNIGHT IN FRIGORIFERO (NO PIEGHE)",
+            items: [
+              "<strong>Niente pieghe:</strong> Estrarre l'impasto dopo circa 20-25 minuti di impasto dinamico. Non fare alcuna piega per garantire una mollica fittissima.",
+              "<strong>Maturazione:</strong> Riponi l'impasto in una ciotola imburrata, copri ermeticamente e metti in frigo a 4 °C per <strong>12-18 ore</strong>."
+            ]
+          },
+          {
+            title: "FASE 4: STAGLIO, PIRLATURA E SECONDA LIEVITAZIONE",
+            items: [
+              "<strong>Staglio:</strong> Dividi l'impasto freddo in <strong>8 porzioni uguali da circa 100 g</strong>.",
+              "<strong>Pirlatura:</strong> Forma palline sferiche ben tese ruotandole sul piano imburrato (senza farina).",
+              "<strong>Lievitazione:</strong> Disponi su teglia, appiattisci leggermente e metti nel forno Glem Gas spento con luce accesa per <strong>60-90 minuti</strong> (fino al raddoppio)."
+            ]
+          },
+          {
+            title: "FASE 5: COTTURA NEL GLEM GAS SPECIALISTA SA66IX",
+            items: [
+              "Preriscalda il forno in modalità <strong>Statico a 190 °C</strong>.",
+              "Spennella delicatamente i panini con tuorlo e latte sbattuti.",
+              "Inforna a metà altezza per <strong>12-14 minuti</strong> fino a doratura ambrata.",
+              "<strong>Finitura Martin's:</strong> Appena sfornati, spennella la superficie con i 15 g di burro fuso e copri con un canovaccio su una griglia."
+            ]
+          }
+        ],
+        nutritionTable: {
+          title: "Scheda Nutrizionale (Per 100 g di prodotto cotto)",
+          rows: [
+            { label: "Energia (Kcal)", value: "268 kcal" },
+            { label: "Proteine", value: "8,1 g" },
+            { label: "Carboidrati", value: "44,2 g" },
+            { label: "— di cui Zuccheri", value: "4,9 g" },
+            { label: "Grassi Totali", value: "6,5 g" },
+            { label: "— di cui Saturi", value: "3,7 g" },
+            { label: "— di cui Insaturi", value: "2,8 g" },
+            { label: "Fibre", value: "2,2 g" },
+            { label: "Sale", value: "0,94 g" }
+          ]
+        }
+      },
+      {
+        id: "pangoccioli-banana",
+        title: "Pangoccioli alla Banana",
+        subtitle: "Metodo Frigo 12+ ore & Zero Sprechi",
+        category: "Lievitati Dolci",
+        icon: "fa-cookie-bite",
+        yield: "14 Pangoccioli (~70-75 g ciascuno)",
+        equipment: "Bimby TM5, Forno Glem Gas Specialista SA66IX",
+        tags: ["Metodo Frigo 12+ h", "Zero Sprechi", "Zero Strutto/Margarina", "Maturazione a Freddo"],
+        ingredients: [
+          {
+            section: "Ingredienti per 14 Pangoccioli alla Banana",
+            items: [
+              "<strong>Farina Manitoba:</strong> 400 g",
+              "<strong>Farina 00 (forza media, W 260-280):</strong> 100 g",
+              "<strong>Banane mature congelate:</strong> 250 g di polpa (pesata già sbucciata)",
+              "<strong>Latte intero fresco:</strong> 100 g (a temperatura ambiente)",
+              "<strong>Zucchero semolato:</strong> 70 g",
+              "<strong>Burro (82% materia grassa, a pomata):</strong> 70 g <em>(zero strutto, zero margarina)</em>",
+              "<strong>Lievito di birra fresco:</strong> 8 g <em>(dosato per la lunga sosta a freddo)</em>",
+              "<strong>Uovo medio:</strong> 1 (circa 50 g)",
+              "<strong>Sale fino:</strong> 6 g",
+              "<strong>Estratto di vaniglia in pasta:</strong> 1 cucchiaio",
+              "<strong>Gocce di cioccolato fondente:</strong> 100 g <em>(tenute in freezer fino all'inserimento)</em>"
+            ]
+          }
+        ],
+        steps: [
+          {
+            title: "1. Preparazione della purea di banane (Zero Sprechi)",
+            items: [
+              "Togli le banane mature dal congelatore e lasciale scongelare completamente a temperatura ambiente dentro un colino, per eliminare l'acqua di vegetazione in eccesso.",
+              "Frulla la polpa ottenuta fino a ridurla in una crema liscia. Mettila da parte."
+            ]
+          },
+          {
+            title: "2. Attivazione e Impasto nel Bimby TM5",
+            items: [
+              "Nel boccale del Bimby inserisci il latte a temperatura ambiente, il lievito di birra fresco spezzettato e 1 cucchiaino di zucchero dal totale. Avvia: <strong>1 Minuto / 37°C / Velocità 2</strong>.",
+              "Aggiungi la purea di banane, l'uovo, la farina Manitoba, la farina 00 e lo zucchero rimanente.",
+              "Avvia la modalità impasto: <strong>2 Minuti / Funzione Spiga</strong>."
+            ]
+          },
+          {
+            title: "3. L'incordatura con il burro e il cioccolato",
+            items: [
+              "Con le lame in movemento a <strong>Velocità Spiga</strong>, inserisci il burro a pomata un pezzetto alla volta dal foro del coperchio.",
+              "A metà inserimento del burro, unisci il sale e la vaniglia. Tempo totale impasto: circa <strong>5-6 minuti a Velocità Spiga</strong> fino ad ottenere una massa liscia ed elastica.",
+              "Negli ultimi 30 secondi, versa dal foro le gocce di cioccolato <strong>ghiacciate da freezer</strong>."
+            ]
+          },
+          {
+            title: "4. La maturazione in frigo (12-16 ore)",
+            items: [
+              "Rovescia l'impasto sul piano di lavoro <strong>completamente pulito, asciutto e nudo</strong> (senza burro né farina). Dagli una forma sferica e trasferiscilo in una ciotola capiente spennellata d'olio.",
+              "Lascialo a <strong>temperatura ambiente per 30-45 minuti</strong> per avviare la lievitazione.",
+              "Copri ermeticamente e riponi in <strong>frigorifero (4-6°C) per circa 12-14 ore</strong> (tutta la notte)."
+            ]
+          },
+          {
+            title: "5. Acclimatamento, Formatura e Seconda Lievitazione",
+            items: [
+              "La mattina seguente, estrai l'impasto dal frigo e lascialo <strong>acclimatare sul banco per 45-60 minuti</strong>.",
+              "Rovescia l'impasto, sgonfialo delicatamente e dividilo in <strong>14 porzioni precise da circa 70-75 g</strong>.",
+              "<strong>Pirlatura:</strong> Fai rotolare ogni pezzetto sotto il palmo della mano direttamente sul piano di lavoro nudo (sfruttando l'attrito per creare tensione). Inumidisci appena i polpastrelli con acqua se necessario, ma mai il banco.",
+              "Disponi i pangoccioli su teglie con carta forno, copri con un panno e fai lievitare nel forno spento con luce accesa per <strong>1,5 - 2 ore</strong>.",
+              "Spennella delicatamente la superficie con un'emulsione di <strong>tuorlo e latte</strong>."
+            ]
+          },
+          {
+            title: "6. Cottura nel Forno Glem Gas Specialista SA66IX",
+            items: [
+              "Preriscalda il forno in modalità <strong>statica a 170°C</strong>.",
+              "Inforna una teglia alla volta a metà altezza e cuoci per <strong>18-20 minuti</strong>.",
+              "<strong>Il tocco del maestro:</strong> Appena sfornati e ancora roventi, spennella leggermente la superficie con un velo di burro fuso per sigillare l'umidità. Fai raffreddare su una gratella."
+            ]
+          }
+        ],
+        chefTips: [
+          "<strong>Come congelarli da cotti per settimane:</strong>",
+          "1. <em>Abbattimento termico casalingo:</em> Appena tiepidi, chiudili in sacchetti per freezer alimentari rimuovendo quanta più aria possibile.",
+          "2. <em>Congelamento rapido:</em> Mettili subito in freezer per bloccare l'invecchiamento dell'amido.",
+          "3. <em>Rigenerazione:</em> Scongela a temperatura ambiente per 2-3 ore oppure scalda per 2-3 minuti in forno statico a 140°C."
+        ],
+        nutritionTable: {
+          title: "Scheda Nutrizionale (Per 100 g di prodotto cotto)",
+          rows: [
+            { label: "Energia (Kcal)", value: "338 kcal" },
+            { label: "Proteine", value: "7,8 g" },
+            { label: "Carboidrati", value: "55,2 g" },
+            { label: "— di cui Zuccheri", value: "15,3 g" },
+            { label: "Grassi Totali", value: "10,0 g" },
+            { label: "— di cui Saturi", value: "5,6 g" },
+            { label: "— di cui Insaturi", value: "4,4 g" },
+            { label: "Fibre", value: "2,8 g" },
+            { label: "Sale", value: "0,5 g" }
+          ]
+        }
+      },
+      {
+        id: "panna-montata-d-autore",
+        title: "Panna Montata d'Autore",
+        subtitle: "4 Preparazioni Tecniche con Calcolatore di Dose",
+        category: "Dolci & Biscotti",
+        icon: "fa-ice-cream",
+        yield: "Personalizzabile (Calcolatore Dinamico)",
+        equipment: "Bimby TM5 (Farfalla), Frigorifero (4°C)",
+        tags: ["Calcolatore Dosi", "Bimby TM5", "Regola 4°C", "Pasticceria d'Autore"],
+        isWhippedCreamCalculator: true,
+        ingredients: [],
+        steps: [],
+        chefTips: [
+          "<strong>Regola aurea della temperatura:</strong> Panna, boccale e farfalla devono essere a circa 4°C. Se il boccale si è scaldato, sciacqualo con acqua e ghiaccio ed asciugalo perfettamente.",
+          "<strong>Monitoraggio sensoriale:</strong> Nel Bimby TM5 non impostare mai il timer fisso. Ascolta l'audio delle lame: quando il suono cambia e diventa cupo/sordo, spegni immediatamente per non rischiare di separare il grasso e fare il burro."
+        ]
+      }
+    ];
+
+    // STATO DELL'APPLICAZIONE
+<!-- ... existing code -->
+    // FUNZIONE RENDER PRINCIPALE RICETTA
+    function renderRecipe(recipe) {
+      const container = document.getElementById('recipeContainer');
+      
+      // Update breadcrumb
+      document.getElementById('breadcrumbCategory').textContent = recipe.category;
+      document.getElementById('breadcrumbTitle').textContent = recipe.title;
+
+      let html = `
+        <div class="bg-white dark:bg-stone-950 rounded-2xl shadow-xl border border-stone-200 dark:border-stone-800 p-6 md:p-10 mb-8 transition-colors">
+          <!-- Header Ricetta -->
+          <div class="border-b border-stone-200 dark:border-stone-800 pb-6 mb-8">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300">
+                <i class="fa-solid ${recipe.icon} mr-1.5"></i> ${recipe.category}
+              </span>
+              <div class="flex flex-wrap gap-1.5">
+                ${recipe.tags.map(tag => `<span class="px-2.5 py-0.5 rounded-md text-[11px] font-medium bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400">${tag}</span>`).join('')}
+              </div>
+            </div>
+            
+            <h1 class="font-serif font-bold text-3xl md:text-4xl text-stone-900 dark:text-white mb-2 tracking-tight">${recipe.title}</h1>
+            <p class="text-stone-500 dark:text-stone-400 text-lg font-serif italic">${recipe.subtitle}</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-6 border-t border-stone-100 dark:border-stone-800/60 text-sm">
+              <div class="flex items-center space-x-3 text-stone-700 dark:text-stone-300">
+                <div class="w-9 h-9 rounded-lg bg-amber-50 dark:bg-stone-900 flex items-center justify-center text-amber-600 border border-amber-200/50 dark:border-stone-800">
+                  <i class="fa-solid fa-chart-pie text-base"></i>
+                </div>
+                <div>
+                  <div class="text-xs text-stone-400 uppercase font-bold tracking-wider">Resa / Porzioni</div>
+                  <div class="font-medium">${recipe.yield}</div>
+                </div>
+              </div>
+              <div class="flex items-center space-x-3 text-stone-700 dark:text-stone-300">
+                <div class="w-9 h-9 rounded-lg bg-amber-50 dark:bg-stone-900 flex items-center justify-center text-amber-600 border border-amber-200/50 dark:border-stone-800">
+                  <i class="fa-solid fa-kitchen-set text-base"></i>
+                </div>
+                <div>
+                  <div class="text-xs text-stone-400 uppercase font-bold tracking-wider">Attrezzatura</div>
+                  <div class="font-medium">${recipe.equipment}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+      `;
+
+      // Gestione Speciale per Panna Montata d'Autore (Calcolatore Dinamico)
+      if (recipe.isWhippedCreamCalculator) {
+        html += `
+          <div class="mb-10 bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200/80 dark:border-amber-800/50 rounded-2xl p-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+              <div>
+                <h3 class="text-xl font-bold font-serif text-stone-900 dark:text-white flex items-center gap-2">
+                  <i class="fa-solid fa-calculator text-amber-600"></i> Calcolatore Dinamico Dosi Panna
+                </h3>
+                <p class="text-sm text-stone-600 dark:text-stone-400 mt-1">Seleziona o inserisci la quantità di panna base desiderata per calcolare le 4 preparazioni.</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <label for="pannaBaseInput" class="text-sm font-semibold text-stone-700 dark:text-stone-300 whitespace-nowrap">Panna Base (g):</label>
+                <input type="number" id="pannaBaseInput" value="500" min="50" max="2000" step="10" class="w-28 px-3 py-2 bg-white dark:bg-stone-900 border border-amber-300 dark:border-amber-700 rounded-xl font-bold text-amber-700 dark:text-amber-400 text-center text-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+              </div>
+            </div>
+
+            <!-- Pulsanti Preimpostati -->
+            <div class="flex flex-wrap gap-2 mb-2">
+              <span class="text-xs font-semibold text-stone-400 uppercase self-center mr-2">Dosi veloci:</span>
+              <button onclick="updatePannaCalculator(100)" class="px-3 py-1 bg-white dark:bg-stone-900 hover:bg-amber-600 hover:text-white border border-stone-200 dark:border-stone-800 rounded-lg text-xs font-semibold transition-all">100 g</button>
+              <button onclick="updatePannaCalculator(150)" class="px-3 py-1 bg-white dark:bg-stone-900 hover:bg-amber-600 hover:text-white border border-stone-200 dark:border-stone-800 rounded-lg text-xs font-semibold transition-all">150 g</button>
+              <button onclick="updatePannaCalculator(200)" class="px-3 py-1 bg-white dark:bg-stone-900 hover:bg-amber-600 hover:text-white border border-stone-200 dark:border-stone-800 rounded-lg text-xs font-semibold transition-all">200 g</button>
+              <button onclick="updatePannaCalculator(250)" class="px-3 py-1 bg-white dark:bg-stone-900 hover:bg-amber-600 hover:text-white border border-stone-200 dark:border-stone-800 rounded-lg text-xs font-semibold transition-all">250 g</button>
+              <button onclick="updatePannaCalculator(400)" class="px-3 py-1 bg-white dark:bg-stone-900 hover:bg-amber-600 hover:text-white border border-stone-200 dark:border-stone-800 rounded-lg text-xs font-semibold transition-all">400 g</button>
+              <button onclick="updatePannaCalculator(500)" class="px-3 py-1 bg-white dark:bg-stone-900 hover:bg-amber-600 hover:text-white border border-stone-200 dark:border-stone-800 rounded-lg text-xs font-semibold transition-all">500 g</button>
+            </div>
+          </div>
+
+          <!-- 4 Schede Preparazioni -->
+          <div class="space-y-10" id="pannaRecipesContainer">
+            <!-- Renderizzato via JS dynamic updater -->
+          </div>
+        `;
+      } else {
+        // RENDERING RICETTE STANDARD
+        if (recipe.ingredients && recipe.ingredients.length > 0) {
+          html += `
+            <div class="mb-10">
+              <h2 class="text-xl font-bold font-serif text-stone-900 dark:text-white mb-4 flex items-center">
+                <i class="fa-solid fa-list-check text-amber-600 mr-2.5"></i> Ingredienti
+              </h2>
+              <div class="grid grid-cols-1 ${recipe.ingredients.length > 1 ? 'md:grid-cols-2' : ''} gap-6">
+                ${recipe.ingredients.map(group => `
+                  <div class="bg-stone-50 dark:bg-stone-900/60 rounded-xl p-5 border border-stone-200/80 dark:border-stone-800">
+                    <h3 class="font-bold text-amber-800 dark:text-amber-400 text-sm tracking-wide uppercase mb-3 border-b border-stone-200 dark:border-stone-800 pb-2">${group.section}</h3>
+                    <ul class="space-y-2 text-sm text-stone-700 dark:text-stone-300">
+                      ${group.items.map(item => `
+                        <li class="flex items-start">
+                          <input type="checkbox" class="mt-1 mr-2.5 rounded text-amber-600 focus:ring-amber-500 border-stone-300 dark:border-stone-700 dark:bg-stone-800">
+                          <span>${item}</span>
+                        </li>
+                      `).join('')}
+                    </ul>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        }
+
+        if (recipe.steps && recipe.steps.length > 0) {
+          html += `
+            <div class="mb-10">
+              <h2 class="text-xl font-bold font-serif text-stone-900 dark:text-white mb-6 flex items-center">
+                <i class="fa-solid fa-utensils text-amber-600 mr-2.5"></i> Procedimento Passo-Passo
+              </h2>
+              <div class="space-y-6">
+                ${recipe.steps.map((step, idx) => `
+                  <div class="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800 p-5 md:p-6 shadow-sm">
+                    <h3 class="font-serif font-bold text-lg text-amber-700 dark:text-amber-400 mb-3 flex items-center">
+                      <span class="w-7 h-7 rounded-full bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-300 text-xs font-sans font-bold flex items-center justify-center mr-2.5">${idx + 1}</span>
+                      ${step.title}
+                    </h3>
+                    <ul class="space-y-2.5 text-stone-700 dark:text-stone-300 text-sm leading-relaxed pl-2 border-l-2 border-amber-200 dark:border-amber-900/50">
+                      ${step.items.map(item => `<li class="pl-2">${item}</li>`).join('')}
+                    </ul>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      // Trucchi dello chef
+      if (recipe.chefTips && recipe.chefTips.length > 0) {
+        html += `
+          <div class="mb-8 bg-amber-50/50 dark:bg-amber-950/20 rounded-xl border border-amber-200/60 dark:border-amber-900/30 p-5">
+            <h3 class="font-serif font-bold text-amber-800 dark:text-amber-300 text-base mb-3 flex items-center">
+              <i class="fa-solid fa-lightbulb text-amber-600 mr-2"></i> Segreti dello Chef & Consigli
+            </h3>
+            <ul class="space-y-2 text-sm text-stone-700 dark:text-stone-300">
+              ${recipe.chefTips.map(tip => `<li class="flex items-start"><i class="fa-solid fa-check text-amber-600 mt-1 mr-2 text-xs"></i><span>${tip}</span></li>`).join('')}
+            </ul>
+          </div>
+        `;
+      }
+
+      // Note Tecniche se presenti
+      if (recipe.technicalNotes && recipe.technicalNotes.length > 0) {
+        html += `
+          <div class="mb-8 bg-stone-100 dark:bg-stone-900/80 rounded-xl border border-stone-200 dark:border-stone-800 p-5">
+            <h3 class="font-serif font-bold text-stone-900 dark:text-white text-base mb-3 flex items-center">
+              <i class="fa-solid fa-microscope text-amber-600 mr-2"></i> Scheda Tecnico-Culinaria
+            </h3>
+            <ul class="space-y-2 text-sm text-stone-700 dark:text-stone-300">
+              ${recipe.technicalNotes.map(note => `<li class="flex items-start"><i class="fa-solid fa-angle-right text-amber-600 mt-1 mr-2 text-xs"></i><span>${note}</span></li>`).join('')}
+            </ul>
+          </div>
+        `;
+      }
+
+      // Tabella Nutrizionale se presente
+      if (recipe.nutritionTable) {
+        html += `
+          <div class="mt-8 border-t border-stone-200 dark:border-stone-800 pt-6">
+            <h3 class="font-serif font-bold text-stone-900 dark:text-white text-base mb-4 flex items-center">
+              <i class="fa-solid fa-heart-pulse text-amber-600 mr-2"></i> ${recipe.nutritionTable.title}
+            </h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm text-left text-stone-700 dark:text-stone-300">
+                <thead class="text-xs uppercase bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400">
+                  <tr>
+                    <th scope="col" class="px-4 py-2.5 rounded-l-lg">Nutriente</th>
+                    <th scope="col" class="px-4 py-2.5 rounded-r-lg">Quantità</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-stone-100 dark:divide-stone-800">
+                  ${recipe.nutritionTable.rows.map(r => `
+                    <tr>
+                      <td class="px-4 py-2 font-medium">${r.label}</td>
+                      <td class="px-4 py-2">${r.value}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      html += `</div>`;
+      container.innerHTML = html;
+
+      // Se la ricetta è il calcolatore di panna montata, attiva i listener e renderizza
+      if (recipe.isWhippedCreamCalculator) {
+        const input = document.getElementById('pannaBaseInput');
+        if (input) {
+          input.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value) || 0;
+            renderWhippedCreamCards(val);
+          });
+        }
+        renderWhippedCreamCards(500);
+      }
+    }
+
+    // CALCOLATORE PANNA MONTATA
+    function updatePannaCalculator(grams) {
+      const input = document.getElementById('pannaBaseInput');
+      if (input) {
+        input.value = grams;
+        renderWhippedCreamCards(grams);
+      }
+    }
+
+    function renderWhippedCreamCards(baseGrams) {
+      const container = document.getElementById('pannaRecipesContainer');
+      if (!container) return;
+
+      const g = Math.max(10, baseGrams);
+
+      // Calcolo Dosi Proporzionali
+      const r1 = {
+        panna: g,
+        zucchero: Math.round(g * 0.10 * 10) / 10,
+        sale: "1 pizzico",
+        vaniglia: "1 cucchiaino estratto"
+      };
+
+      const r2 = {
+        panna: Math.round(g * 0.8 * 10) / 10,
+        mascarpone: Math.round(g * 0.2 * 10) / 10,
+        zucchero: Math.round(g * 0.10 * 10) / 10,
+        miele: Math.round(g * 0.02 * 10) / 10,
+        sale: "1 pizzico"
+      };
+
+      const r3 = {
+        panna: g,
+        zucchero: Math.round(g * 0.08 * 10) / 10
+      };
+
+      const r4 = {
+        mascarpone: g,
+        panna: g,
+        zucchero: Math.round(g * 0.24 * 10) / 10,
+        vaniglia: "Semi di 1/2 bacca Bourbon"
+      };
+
+      container.innerHTML = `
+        <!-- 1. PANNA CLASSICA -->
+        <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-6 shadow-sm">
+          <div class="flex items-center justify-between border-b border-stone-100 dark:border-stone-800 pb-4 mb-4">
+            <h3 class="font-serif font-bold text-xl text-amber-700 dark:text-amber-400">1. Panna Montata Classica</h3>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 rounded-md">Dolci al cucchiaio & decorazioni</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-stone-50 dark:bg-stone-950 p-4 rounded-xl border border-stone-200/70 dark:border-stone-800">
+              <h4 class="font-bold text-xs uppercase tracking-wider text-amber-800 dark:text-amber-400 mb-3">Ingredienti Calcolati (${g} g panna)</h4>
+              <ul class="space-y-1.5 text-sm">
+                <li>• <strong>Panna fresca 35%:</strong> ${r1.panna} g</li>
+                <li>• <strong>Zucchero a velo:</strong> ${r1.zucchero} g (10% del peso panna)</li>
+                <li>• <strong>Sale fino:</strong> ${r1.sale}</li>
+                <li>• <strong>Vaniglia:</strong> ${r1.vaniglia}</li>
+              </ul>
+            </div>
+            <div class="text-sm space-y-2 text-stone-700 dark:text-stone-300">
+              <h4 class="font-bold text-xs uppercase tracking-wider text-amber-800 dark:text-amber-400 mb-2">Procedimento Bimby TM5</h4>
+              <p>1. Raffredda boccale e farfalla a 4°C.</p>
+              <p>2. Inserisci la <strong>farfalla</strong>, versa tutti gli ingredienti ben freddi.</p>
+              <p>3. Monta a <strong>Velocità 3.5 SENZA TIMER</strong>.</p>
+              <p>4. Spegni subito quando il suono diventa sordo (circa 1:30 - 2:30 min).</p>
+            </div>
+          </div>
+          <!-- Nutrizione -->
+          <div class="text-xs bg-stone-100 dark:bg-stone-950 p-3 rounded-lg flex flex-wrap gap-4 text-stone-600 dark:text-stone-400">
+            <span><strong>Valori per 100g:</strong> 342 kcal</span>
+            <span>Prot: 2.1g</span>
+            <span>Carb: 10.2g (Zuccheri 10.2g)</span>
+            <span>Grassi: 33.9g (Sat: 21.5g)</span>
+          </div>
+        </div>
+
+        <!-- 2. PANNA PER MARITOZZI -->
+        <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-6 shadow-sm">
+          <div class="flex items-center justify-between border-b border-stone-100 dark:border-stone-800 pb-4 mb-4">
+            <h3 class="font-serif font-bold text-xl text-amber-700 dark:text-amber-400">2. Panna per Maritozzi</h3>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 rounded-md">Compatta & Tenuta Perfetta</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-stone-50 dark:bg-stone-950 p-4 rounded-xl border border-stone-200/70 dark:border-stone-800">
+              <h4 class="font-bold text-xs uppercase tracking-wider text-amber-800 dark:text-amber-400 mb-3">Ingredienti Calcolati (Base ${g} g)</h4>
+              <ul class="space-y-1.5 text-sm">
+                <li>• <strong>Panna fresca 35%:</strong> ${r2.panna} g</li>
+                <li>• <strong>Mascarpone vaccino:</strong> ${r2.mascarpone} g</li>
+                <li>• <strong>Zucchero a velo:</strong> ${r2.zucchero} g</li>
+                <li>• <strong>Miele d'acacia:</strong> ${r2.miele} g (lucentezza)</li>
+                <li>• <strong>Sale fino:</strong> ${r2.sale}</li>
+              </ul>
+            </div>
+            <div class="text-sm space-y-2 text-stone-700 dark:text-stone-300">
+              <h4 class="font-bold text-xs uppercase tracking-wider text-amber-800 dark:text-amber-400 mb-2">Procedimento Bimby TM5</h4>
+              <p>1. Boccale e ingredienti gelidi (4°C).</p>
+              <p>2. Inserisci <strong>farfalla</strong>, panna, mascarpone a tocchetti, zucchero, miele e sale.</p>
+              <p>3. Monta a <strong>Velocità 3.5</strong> per circa 2 minuti monitorando a vista.</p>
+              <p>4. Trasferisci in sac à poche con bocchetta a stella.</p>
+            </div>
+          </div>
+          <div class="text-xs bg-stone-100 dark:bg-stone-950 p-3 rounded-lg flex flex-wrap gap-4 text-stone-600 dark:text-stone-400">
+            <span><strong>Valori per 100g:</strong> 375 kcal</span>
+            <span>Prot: 2.5g</span>
+            <span>Carb: 9.8g (Zuccheri 9.5g)</span>
+            <span>Grassi: 36.7g (Sat: 23.2g)</span>
+          </div>
+        </div>
+
+        <!-- 3. PANNA GELATO E SEMIFREDDI -->
+        <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-6 shadow-sm">
+          <div class="flex items-center justify-between border-b border-stone-100 dark:border-stone-800 pb-4 mb-4">
+            <h3 class="font-serif font-bold text-xl text-amber-700 dark:text-amber-400">3. Panna per Gelato e Semifreddi</h3>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 rounded-md">Semi-montata & Aerea</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-stone-50 dark:bg-stone-950 p-4 rounded-xl border border-stone-200/70 dark:border-stone-800">
+              <h4 class="font-bold text-xs uppercase tracking-wider text-amber-800 dark:text-amber-400 mb-3">Ingredienti Calcolati (${g} g panna)</h4>
+              <ul class="space-y-1.5 text-sm">
+                <li>• <strong>Panna fresca (35-38%):</strong> ${r3.panna} g</li>
+                <li>• <strong>Zucchero semolato fine:</strong> ${r3.zucchero} g</li>
+              </ul>
+            </div>
+            <div class="text-sm space-y-2 text-stone-700 dark:text-stone-300">
+              <h4 class="font-bold text-xs uppercase tracking-wider text-amber-800 dark:text-amber-400 mb-2">Procedimento Bimby TM5</h4>
+              <p>1. Posiziona la <strong>farfalla</strong> nel boccale freddo.</p>
+              <p>2. Versa panna freddissima e zucchero semolato.</p>
+              <p>3. Monta a <strong>Velocità 3</strong> per 1:00 - 1:15 minuti.</p>
+              <p>4. Spegni quando ha la consistenza di una spuma morbida (deve formare il nastro).</p>
+            </div>
+          </div>
+          <div class="text-xs bg-stone-100 dark:bg-stone-950 p-3 rounded-lg flex flex-wrap gap-4 text-stone-600 dark:text-stone-400">
+            <span><strong>Valori per 100g:</strong> 328 kcal</span>
+            <span>Prot: 2.2g</span>
+            <span>Carb: 8.2g (Zuccheri 8.2g)</span>
+            <span>Grassi: 32.2g (Sat: 20.4g)</span>
+          </div>
+        </div>
+
+        <!-- 4. PANNA AL MASCARPONE -->
+        <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-6 shadow-sm">
+          <div class="flex items-center justify-between border-b border-stone-100 dark:border-stone-800 pb-4 mb-4">
+            <h3 class="font-serif font-bold text-xl text-amber-700 dark:text-amber-400">4. Panna al Mascarpone</h3>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 rounded-md">Ricca, Setosa & Avvolgente</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-stone-50 dark:bg-stone-950 p-4 rounded-xl border border-stone-200/70 dark:border-stone-800">
+              <h4 class="font-bold text-xs uppercase tracking-wider text-amber-800 dark:text-amber-400 mb-3">Ingredienti Calcolati (Rapporto 1:1)</h4>
+              <ul class="space-y-1.5 text-sm">
+                <li>• <strong>Mascarpone di alta qualità:</strong> ${r4.mascarpone} g</li>
+                <li>• <strong>Panna fresca 35%:</strong> ${r4.panna} g</li>
+                <li>• <strong>Zucchero a velo:</strong> ${r4.zucchero} g</li>
+                <li>• <strong>Vaniglia:</strong> ${r4.vaniglia}</li>
+              </ul>
+            </div>
+            <div class="text-sm space-y-2 text-stone-700 dark:text-stone-300">
+              <h4 class="font-bold text-xs uppercase tracking-wider text-amber-800 dark:text-amber-400 mb-2">Procedimento Bimby TM5</h4>
+              <p>1. Inserisci la <strong>farfalla</strong> nel boccale freddo con mascarpone, zucchero e vaniglia.</p>
+              <p>2. Lavora 30 sec a <strong>Velocità 3</strong>.</p>
+              <p>3. A <strong>Velocità 3.5</strong>, versa la panna a filo dal foro del coperchio.</p>
+              <p>4. Monta per circa 1:30 - 2:00 min fino ad ottenere una crema densa e lucida.</p>
+            </div>
+          </div>
+          <div class="text-xs bg-stone-100 dark:bg-stone-950 p-3 rounded-lg flex flex-wrap gap-4 text-stone-600 dark:text-stone-400">
+            <span><strong>Valori per 100g:</strong> 410 kcal</span>
+            <span>Prot: 2.8g</span>
+            <span>Carb: 9.5g (Zuccheri 9.2g)</span>
+            <span>Grassi: 41.1g (Sat: 26.1g)</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // STATO DELL'APPLICAZIONE E INIZIALIZZAZIONE
+    let activeRecipeId = recipes[0].id;
+    let selectedCategoryFilter = "all";
+    let searchFilterQuery = "";
+    let fontSizeLevel = 100;
+
+    // RENDERING SIDEBAR E CATEGORIE
+    function renderSidebar() {
+      const nav = document.getElementById('recipeList');
+      if (!nav) return;
+
+      // Filtra le ricette in base a categoria e ricerca
+      const filteredRecipes = recipes.filter(r => {
+        const matchesCategory = selectedCategoryFilter === "all" || r.category === selectedCategoryFilter;
+        const matchesQuery = searchFilterQuery === "" || 
+          r.title.toLowerCase().includes(searchFilterQuery.toLowerCase()) || 
+          r.subtitle.toLowerCase().includes(searchFilterQuery.toLowerCase()) ||
+          (r.ingredients && r.ingredients.some(ig => ig.items.some(it => it.toLowerCase().includes(searchFilterQuery.toLowerCase()))));
+        return matchesCategory && matchesQuery;
+      });
+
+      // Aggiorna contatore ricette
+      const countEl = document.getElementById('recipeCount');
+      if (countEl) countEl.textContent = `${filteredRecipes.length} Ricett${filteredRecipes.length === 1 ? 'a' : 'e'}`;
+
+      if (filteredRecipes.length === 0) {
+        nav.innerHTML = `
+          <div class="text-center py-8 text-stone-400 dark:text-stone-500 text-sm">
+            <i class="fa-solid fa-cookie-bite text-3xl mb-2 block opacity-50"></i>
+            Nessuna ricetta trovata
+          </div>
+        `;
+        return;
+      }
+
+      // Raggruppa le ricette filtrate per Categoria
+      const categoriesOrder = ["Lievitati Salati", "Panificazione", "Lievitati Dolci", "Dolci & Biscotti", "Fitness & Wellness"];
+      const grouped = {};
+
+      filteredRecipes.forEach(recipe => {
+        if (!grouped[recipe.category]) {
+          grouped[recipe.category] = [];
+        }
+        grouped[recipe.category].push(recipe);
+      });
+
+      let navHtml = "";
+
+      categoriesOrder.forEach(catName => {
+        if (grouped[catName] && grouped[catName].length > 0) {
+          navHtml += `
+            <div class="mb-4">
+              <div class="flex items-center justify-between px-2 py-1 mb-1 text-[11px] font-bold text-stone-400 uppercase tracking-wider">
+                <span>${catName}</span>
+                <span class="bg-stone-200 dark:bg-stone-800 text-stone-600 dark:text-stone-300 px-1.5 py-0.2 rounded-full text-[10px] font-sans">${grouped[catName].length}</span>
+              </div>
+              <div class="space-y-1">
+                ${grouped[catName].map(recipe => {
+                  const isActive = recipe.id === activeRecipeId;
+                  return `
+                    <button onclick="selectRecipe('${recipe.id}')" class="w-full text-left px-3 py-2.5 rounded-xl transition-all flex items-center space-x-3 ${isActive ? 'bg-amber-600 text-white shadow-md shadow-amber-600/20 font-medium' : 'text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-900'}">
+                      <div class="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${isActive ? 'bg-amber-700 text-white' : 'bg-stone-100 dark:bg-stone-800 text-amber-600 dark:text-amber-400'}">
+                        <i class="fa-solid ${recipe.icon} text-xs"></i>
+                      </div>
+                      <div class="truncate flex-1">
+                        <div class="text-xs font-semibold leading-tight truncate">${recipe.title}</div>
+                        <div class="text-[10px] ${isActive ? 'text-amber-100' : 'text-stone-400'} truncate">${recipe.subtitle}</div>
+                      </div>
+                    </button>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          `;
+        }
+      });
+
+      nav.innerHTML = navHtml;
+    }
+
+    // SELEZIONE RICETTA
+    function selectRecipe(recipeId) {
+      activeRecipeId = recipeId;
+      const recipe = recipes.find(r => r.id === recipeId);
+      if (recipe) {
+        renderRecipe(recipe);
+        renderSidebar();
+        closeMobileSidebar();
+      }
+    }
+
+    // GESTIONE SIDEBAR MOBILE
+    function openMobileSidebar() {
+      document.getElementById('sidebar')?.classList.remove('-translate-x-full');
+      document.getElementById('mobileOverlay')?.classList.remove('hidden');
+    }
+
+    function closeMobileSidebar() {
+      document.getElementById('sidebar')?.classList.add('-translate-x-full');
+      document.getElementById('mobileOverlay')?.classList.add('hidden');
+    }
+
+    // EVENT LISTENERS AL CARICAMENTO
+    window.addEventListener('DOMContentLoaded', () => {
+      // Inizializza prima ricetta
+      const initialRecipe = recipes.find(r => r.id === activeRecipeId) || recipes[0];
+      renderRecipe(initialRecipe);
+      renderSidebar();
+
+      // Mobile Menu
+      document.getElementById('mobileMenuBtn')?.addEventListener('click', openMobileSidebar);
+      document.getElementById('closeSidebarBtn')?.addEventListener('click', closeMobileSidebar);
+      document.getElementById('mobileOverlay')?.addEventListener('click', closeMobileSidebar);
+
+      // Dark Mode Toggle
+      document.getElementById('darkModeToggle')?.addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark');
+      });
+
+      // Ricerca
+      const searchInput = document.getElementById('searchInput');
+      const clearSearchBtn = document.getElementById('clearSearch');
+
+      searchInput?.addEventListener('input', (e) => {
+        searchFilterQuery = e.target.value.trim();
+        if (searchFilterQuery.length > 0) {
+          clearSearchBtn?.classList.remove('hidden');
+        } else {
+          clearSearchBtn?.classList.add('hidden');
+        }
+        renderSidebar();
+      });
+
+      clearSearchBtn?.addEventListener('click', () => {
+        if (searchInput) searchInput.value = "";
+        searchFilterQuery = "";
+        clearSearchBtn.classList.add('hidden');
+        renderSidebar();
+      });
+
+      // Filtri Categoria Veloci
+      document.querySelectorAll('.cat-filter-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          document.querySelectorAll('.cat-filter-btn').forEach(b => {
+            b.classList.remove('bg-amber-600', 'text-white');
+            b.classList.add('bg-stone-100', 'dark:bg-stone-800', 'text-stone-600', 'dark:text-stone-300');
+          });
+          const target = e.currentTarget;
+          target.classList.remove('bg-stone-100', 'dark:bg-stone-800', 'text-stone-600', 'dark:text-stone-300');
+          target.classList.add('bg-amber-600', 'text-white');
+
+          selectedCategoryFilter = target.getAttribute('data-cat') || 'all';
+          renderSidebar();
+        });
+      });
+
+      // Controlli Font Size
+      const recipeContainer = document.getElementById('recipeContainer');
+      document.getElementById('increaseFont')?.addEventListener('click', () => {
+        if (fontSizeLevel < 140) {
+          fontSizeLevel += 10;
+          if (recipeContainer) recipeContainer.style.fontSize = `${fontSizeLevel}%`;
+          const fontResetBtn = document.getElementById('resetFont');
+          if (fontResetBtn) fontResetBtn.textContent = `${fontSizeLevel}%`;
+        }
+      });
+
+      document.getElementById('decreaseFont')?.addEventListener('click', () => {
+        if (fontSizeLevel > 80) {
+          fontSizeLevel -= 10;
+          if (recipeContainer) recipeContainer.style.fontSize = `${fontSizeLevel}%`;
+          const fontResetBtn = document.getElementById('resetFont');
+          if (fontResetBtn) fontResetBtn.textContent = `${fontSizeLevel}%`;
+        }
+      });
+
+      document.getElementById('resetFont')?.addEventListener('click', () => {
+        fontSizeLevel = 100;
+        if (recipeContainer) recipeContainer.style.fontSize = `100%`;
+        const fontResetBtn = document.getElementById('resetFont');
+        if (fontResetBtn) fontResetBtn.textContent = `100%`;
+      });
+
+      // Stampa
+      document.getElementById('printBtn')?.addEventListener('click', () => {
+        window.print();
+      });
+    });
+  </script>
+  <script>
+    // App installabile: registra il service worker (offline + aggiornamento automatico)
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
+</body>
+</html>
