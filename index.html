@@ -139,7 +139,10 @@
 
     <!-- Footer Sidebar / Controlli Generali -->
     <div class="p-4 border-t border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900/50 flex justify-between items-center">
-      <span class="text-xs text-stone-500 dark:text-stone-400 font-medium" id="recipeCount">7 Ricette</span>
+      <div class="flex flex-col">
+        <span class="text-xs text-stone-500 dark:text-stone-400 font-medium" id="recipeCount"></span>
+        <span class="text-[10px] text-stone-400 dark:text-stone-500" id="lastUpdated"></span>
+      </div>
       <div class="flex items-center space-x-1">
         <button id="darkModeToggle" title="Cambia Tema" class="p-2 rounded-lg text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-800 transition-colors">
           <i class="fa-solid fa-moon dark:hidden"></i>
@@ -1303,6 +1306,11 @@
     // App installabile: registra il service worker (offline + aggiornamento automatico)
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js');
+    }
+    // Data di aggiornamento automatica: è la data di pubblicazione della pagina su GitHub Pages
+    const lastUpdated = new Date(document.lastModified);
+    if (!isNaN(lastUpdated)) {
+      document.getElementById('lastUpdated').textContent = 'Aggiornato il ' + lastUpdated.toLocaleDateString('it-IT');
     }
   </script>
 </body>
