@@ -1,9 +1,8 @@
 // Service worker del Ricettario.
-// - File nostri (pagina, tailwind.css, icone, manifest): prima la rete, così ogni apertura con internet
-//   mostra l'ultima versione; senza rete usa la copia salvata.
-// - File esterni (Google Fonts, Font Awesome): prima la copia salvata, aggiornata in background.
+// Tutti i file sono nostri (nessun servizio esterno): prima la rete, così ogni apertura con internet
+// mostra l'ultima versione di pagina e stili insieme; senza rete usa la copia salvata.
 
-const CACHE = 'ricettario-v2';
+const CACHE = 'ricettario-v3';
 const PRECACHE = [
   './',
   'tailwind.css',
@@ -11,6 +10,13 @@ const PRECACHE = [
   'icons/icon.svg',
   'icons/icon-192.png',
   'icons/icon-512.png',
+  'vendor/fonts/fonts.css',
+  'vendor/fonts/inter-latin-wght-normal.woff2',
+  'vendor/fonts/playfair-display-latin-wght-normal.woff2',
+  'vendor/fonts/playfair-display-latin-wght-italic.woff2',
+  'vendor/fontawesome/css/fontawesome.min.css',
+  'vendor/fontawesome/css/solid.min.css',
+  'vendor/fontawesome/webfonts/fa-solid-900.woff2',
 ];
 
 self.addEventListener('install', (event) => {
@@ -28,42 +34,20 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const req = event.request;
-  if (req.method !== 'GET') return;
+  if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
 
-  // File nostri (pagina, tailwind.css, icone, manifest): prima la rete, così pagina e stili
-  // arrivano sempre aggiornati insieme. La pagina è salvata sempre con la chiave './'.
-  const isPage = req.mode === 'navigate';
-  if (isPage || new URL(req.url).origin === self.location.origin) {
-    const key = isPage ? './' : req.url;
-    // 'no-cache' = chiedi sempre al server se il file è cambiato (evita la cache HTTP di 10 minuti di GitHub Pages).
-    event.respondWith(
-      fetch(req.url, { cache: 'no-cache' })
-        .then((res) => {
-          if (res.ok) {
-            const copy = res.clone();
-            caches.open(CACHE).then((cache) => cache.put(key, copy));
-          }
-          return res;
-        })
-        .catch(() => caches.match(key))
-    );
-    return;
-  }
-
-  // File esterni (font, Font Awesome): prima la copia salvata, aggiornata in background.
-
+  // La pagina è salvata sempre con la chiave './' (anche se aperta con parametri nell'indirizzo).
+  const key = req.mode === 'navigate' ? './' : req.url;
+  // 'no-cache' = chiedi sempre al server se il file è cambiato (evita la cache HTTP di 10 minuti di GitHub Pages).
   event.respondWith(
-    caches.match(req).then((cached) => {
-      const network = fetch(req)
-        .then((res) => {
-          if (res.ok || res.type === 'opaque') {
-            const copy = res.clone();
-            caches.open(CACHE).then((cache) => cache.put(req, copy));
-          }
-          return res;
-        })
-        .catch(() => cached);
-      return cached || network;
-    })
+    fetch(req.url, { cache: 'no-cache' })
+      .then((res) => {
+        if (res.ok) {
+          const copy = res.clone();
+          caches.open(CACHE).then((cache) => cache.put(key, copy));
+        }
+        return res;
+      })
+      .catch(() => caches.match(key))
   );
 });
