@@ -911,8 +911,6 @@
       }
     ];
 
-    // STATO DELL'APPLICAZIONE
-<!-- ... existing code -->
     // RICALCOLO DOSI
     // Nei testi delle ricette: [[400]] = quantità che si ricalcola, [[#14]] = numero di pezzi,
     // [[@83]] = grammi di ogni pezzo (impasto crudo). Le ricette senza "scaling" non hanno marcatori.
@@ -1489,6 +1487,9 @@
       const recipe = recipes.find(r => r.id === recipeId);
       if (recipe) {
         renderRecipe(recipe);
+        // La ricetta nuova si apre dall'inizio, non alla posizione di scorrimento della precedente
+        const main = document.querySelector('main');
+        if (main) main.scrollTop = 0;
         renderSidebar();
         closeMobileSidebar();
       }
@@ -1560,31 +1561,25 @@
       });
 
       // Controlli Font Size
+      // Le dimensioni del testo di Tailwind sono fisse (rem), quindi cambiare font-size non le toccava:
+      // "zoom" ingrandisce tutta la ricetta in proporzione (testo, spazi e icone).
       const recipeContainer = document.getElementById('recipeContainer');
+      function setFontSizeLevel(level) {
+        fontSizeLevel = level;
+        if (recipeContainer) recipeContainer.style.zoom = fontSizeLevel / 100;
+        const fontResetBtn = document.getElementById('resetFont');
+        if (fontResetBtn) fontResetBtn.textContent = `${fontSizeLevel}%`;
+      }
+
       document.getElementById('increaseFont')?.addEventListener('click', () => {
-        if (fontSizeLevel < 140) {
-          fontSizeLevel += 10;
-          if (recipeContainer) recipeContainer.style.fontSize = `${fontSizeLevel}%`;
-          const fontResetBtn = document.getElementById('resetFont');
-          if (fontResetBtn) fontResetBtn.textContent = `${fontSizeLevel}%`;
-        }
+        if (fontSizeLevel < 140) setFontSizeLevel(fontSizeLevel + 10);
       });
 
       document.getElementById('decreaseFont')?.addEventListener('click', () => {
-        if (fontSizeLevel > 80) {
-          fontSizeLevel -= 10;
-          if (recipeContainer) recipeContainer.style.fontSize = `${fontSizeLevel}%`;
-          const fontResetBtn = document.getElementById('resetFont');
-          if (fontResetBtn) fontResetBtn.textContent = `${fontSizeLevel}%`;
-        }
+        if (fontSizeLevel > 80) setFontSizeLevel(fontSizeLevel - 10);
       });
 
-      document.getElementById('resetFont')?.addEventListener('click', () => {
-        fontSizeLevel = 100;
-        if (recipeContainer) recipeContainer.style.fontSize = `100%`;
-        const fontResetBtn = document.getElementById('resetFont');
-        if (fontResetBtn) fontResetBtn.textContent = `100%`;
-      });
+      document.getElementById('resetFont')?.addEventListener('click', () => setFontSizeLevel(100));
 
       // Stampa
       document.getElementById('printBtn')?.addEventListener('click', () => {
