@@ -14,7 +14,13 @@
   <link rel="stylesheet" href="vendor/fontawesome/css/solid.min.css">
   <!-- Tailwind CSS (generato con tools/tailwindcss.exe, vedi tailwind.config.js). Va DOPO Font Awesome. -->
   <link rel="stylesheet" href="tailwind.css">
-  
+  <script>
+    // Tema scuro ricordato tra un'apertura e l'altra (applicato subito, prima che la pagina compaia)
+    try {
+      if (localStorage.getItem('ricettario-tema') === 'scuro') document.documentElement.classList.add('dark');
+    } catch (e) {}
+  </script>
+
   <style>
     /* Transizioni ed effetti personalizzati */
     .recipe-transition {
@@ -367,7 +373,7 @@
             items: [
               "<strong>Stesura:</strong> Togli il panetto dal frigo 15-20 minuti prima di lavorarlo per farlo tornare plastico. Stendilo a uno spessore di 6 mm su un piano infarinato o tra due fogli di carta forno. Taglia i biscotti tondi (diametro consigliato 5 cm).",
               "<strong>Finitura Muscovado (Variante 1):</strong> Prima di infornare, premi leggermente la parte superiore di metà dei biscotti crudi nello zucchero Muscovado (o semolato).",
-              "<strong>Riposto termico (Shock):</strong> Metti la teglia con i biscotti tagliati in frigo per 15 minuti prima di infornare."
+              "<strong>Riposo termico (Shock):</strong> Metti la teglia con i biscotti tagliati in frigo per 15 minuti prima di infornare."
             ]
           },
           {
@@ -641,7 +647,7 @@
           {
             title: "3. L'incordatura con il burro e il cioccolato",
             items: [
-              "Con le lame in movemento a <strong>Velocità Spiga</strong>, inserisci il burro a pomata un pezzetto alla volta dal foro del coperchio.",
+              "Con le lame in movimento a <strong>Velocità Spiga</strong>, inserisci il burro a pomata un pezzetto alla volta dal foro del coperchio.",
               "A metà inserimento del burro, unisci il sale e la vaniglia. Tempo totale impasto: circa <strong>5-6 minuti a Velocità Spiga</strong> fino ad ottenere una massa liscia ed elastica.",
               "Negli ultimi 30 secondi, versa dal foro le gocce di cioccolato <strong>ghiacciate da freezer</strong>."
             ]
@@ -1241,6 +1247,8 @@
       if (!container) return;
 
       const g = Math.max(10, baseGrams);
+      // Numeri con la virgola, come nel resto del ricettario
+      const num = (n) => String(n).replace('.', ',');
 
       // Calcolo Dosi Proporzionali
       const r1 = {
@@ -1279,10 +1287,10 @@
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div class="bg-stone-50 dark:bg-stone-950 p-4 rounded-xl border border-stone-200/70 dark:border-stone-800">
-              <h4 class="font-bold text-xs uppercase tracking-wider text-amber-800 dark:text-amber-400 mb-3">Ingredienti Calcolati (${g} g panna)</h4>
+              <h4 class="font-bold text-xs uppercase tracking-wider text-amber-800 dark:text-amber-400 mb-3">Ingredienti Calcolati (${num(g)} g panna)</h4>
               <ul class="space-y-1.5 text-sm">
-                <li>• <strong>Panna fresca 35%:</strong> ${r1.panna} g</li>
-                <li>• <strong>Zucchero a velo:</strong> ${r1.zucchero} g (10% del peso panna)</li>
+                <li>• <strong>Panna fresca 35%:</strong> ${num(r1.panna)} g</li>
+                <li>• <strong>Zucchero a velo:</strong> ${num(r1.zucchero)} g (10% del peso panna)</li>
                 <li>• <strong>Sale fino:</strong> ${r1.sale}</li>
                 <li>• <strong>Vaniglia:</strong> ${r1.vaniglia}</li>
               </ul>
@@ -1298,9 +1306,9 @@
           <!-- Nutrizione -->
           <div class="text-xs bg-stone-100 dark:bg-stone-950 p-3 rounded-lg flex flex-wrap gap-4 text-stone-600 dark:text-stone-400">
             <span><strong>Valori per 100g:</strong> 342 kcal</span>
-            <span>Prot: 2.1g</span>
-            <span>Carb: 10.2g (Zuccheri 10.2g)</span>
-            <span>Grassi: 33.9g (Sat: 21.5g)</span>
+            <span>Prot: 2,1 g</span>
+            <span>Carb: 10,2 g (Zuccheri 10,2 g)</span>
+            <span>Grassi: 33,9 g (Sat: 21,5 g)</span>
           </div>
         </div>
 
@@ -1312,12 +1320,12 @@
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div class="bg-stone-50 dark:bg-stone-950 p-4 rounded-xl border border-stone-200/70 dark:border-stone-800">
-              <h4 class="font-bold text-xs uppercase tracking-wider text-amber-800 dark:text-amber-400 mb-3">Ingredienti Calcolati (Base ${g} g)</h4>
+              <h4 class="font-bold text-xs uppercase tracking-wider text-amber-800 dark:text-amber-400 mb-3">Ingredienti Calcolati (Base ${num(g)} g)</h4>
               <ul class="space-y-1.5 text-sm">
-                <li>• <strong>Panna fresca 35%:</strong> ${r2.panna} g</li>
-                <li>• <strong>Mascarpone vaccino:</strong> ${r2.mascarpone} g</li>
-                <li>• <strong>Zucchero a velo:</strong> ${r2.zucchero} g</li>
-                <li>• <strong>Miele d'acacia:</strong> ${r2.miele} g (lucentezza)</li>
+                <li>• <strong>Panna fresca 35%:</strong> ${num(r2.panna)} g</li>
+                <li>• <strong>Mascarpone vaccino:</strong> ${num(r2.mascarpone)} g</li>
+                <li>• <strong>Zucchero a velo:</strong> ${num(r2.zucchero)} g</li>
+                <li>• <strong>Miele d'acacia:</strong> ${num(r2.miele)} g (lucentezza)</li>
                 <li>• <strong>Sale fino:</strong> ${r2.sale}</li>
               </ul>
             </div>
@@ -1331,9 +1339,9 @@
           </div>
           <div class="text-xs bg-stone-100 dark:bg-stone-950 p-3 rounded-lg flex flex-wrap gap-4 text-stone-600 dark:text-stone-400">
             <span><strong>Valori per 100g:</strong> 375 kcal</span>
-            <span>Prot: 2.5g</span>
-            <span>Carb: 9.8g (Zuccheri 9.5g)</span>
-            <span>Grassi: 36.7g (Sat: 23.2g)</span>
+            <span>Prot: 2,5 g</span>
+            <span>Carb: 9,8 g (Zuccheri 9,5 g)</span>
+            <span>Grassi: 36,7 g (Sat: 23,2 g)</span>
           </div>
         </div>
 
@@ -1345,10 +1353,10 @@
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div class="bg-stone-50 dark:bg-stone-950 p-4 rounded-xl border border-stone-200/70 dark:border-stone-800">
-              <h4 class="font-bold text-xs uppercase tracking-wider text-amber-800 dark:text-amber-400 mb-3">Ingredienti Calcolati (${g} g panna)</h4>
+              <h4 class="font-bold text-xs uppercase tracking-wider text-amber-800 dark:text-amber-400 mb-3">Ingredienti Calcolati (${num(g)} g panna)</h4>
               <ul class="space-y-1.5 text-sm">
-                <li>• <strong>Panna fresca (35-38%):</strong> ${r3.panna} g</li>
-                <li>• <strong>Zucchero semolato fine:</strong> ${r3.zucchero} g</li>
+                <li>• <strong>Panna fresca (35-38%):</strong> ${num(r3.panna)} g</li>
+                <li>• <strong>Zucchero semolato fine:</strong> ${num(r3.zucchero)} g</li>
               </ul>
             </div>
             <div class="text-sm space-y-2 text-stone-700 dark:text-stone-300">
@@ -1361,9 +1369,9 @@
           </div>
           <div class="text-xs bg-stone-100 dark:bg-stone-950 p-3 rounded-lg flex flex-wrap gap-4 text-stone-600 dark:text-stone-400">
             <span><strong>Valori per 100g:</strong> 328 kcal</span>
-            <span>Prot: 2.2g</span>
-            <span>Carb: 8.2g (Zuccheri 8.2g)</span>
-            <span>Grassi: 32.2g (Sat: 20.4g)</span>
+            <span>Prot: 2,2 g</span>
+            <span>Carb: 8,2 g (Zuccheri 8,2 g)</span>
+            <span>Grassi: 32,2 g (Sat: 20,4 g)</span>
           </div>
         </div>
 
@@ -1377,9 +1385,9 @@
             <div class="bg-stone-50 dark:bg-stone-950 p-4 rounded-xl border border-stone-200/70 dark:border-stone-800">
               <h4 class="font-bold text-xs uppercase tracking-wider text-amber-800 dark:text-amber-400 mb-3">Ingredienti Calcolati (Rapporto 1:1)</h4>
               <ul class="space-y-1.5 text-sm">
-                <li>• <strong>Mascarpone di alta qualità:</strong> ${r4.mascarpone} g</li>
-                <li>• <strong>Panna fresca 35%:</strong> ${r4.panna} g</li>
-                <li>• <strong>Zucchero a velo:</strong> ${r4.zucchero} g</li>
+                <li>• <strong>Mascarpone di alta qualità:</strong> ${num(r4.mascarpone)} g</li>
+                <li>• <strong>Panna fresca 35%:</strong> ${num(r4.panna)} g</li>
+                <li>• <strong>Zucchero a velo:</strong> ${num(r4.zucchero)} g</li>
                 <li>• <strong>Vaniglia:</strong> ${r4.vaniglia}</li>
               </ul>
             </div>
@@ -1393,9 +1401,9 @@
           </div>
           <div class="text-xs bg-stone-100 dark:bg-stone-950 p-3 rounded-lg flex flex-wrap gap-4 text-stone-600 dark:text-stone-400">
             <span><strong>Valori per 100g:</strong> 410 kcal</span>
-            <span>Prot: 2.8g</span>
-            <span>Carb: 9.5g (Zuccheri 9.2g)</span>
-            <span>Grassi: 41.1g (Sat: 26.1g)</span>
+            <span>Prot: 2,8 g</span>
+            <span>Carb: 9,5 g (Zuccheri 9,2 g)</span>
+            <span>Grassi: 41,1 g (Sat: 26,1 g)</span>
           </div>
         </div>
       `;
@@ -1449,13 +1457,16 @@
 
       let navHtml = "";
 
-      categoriesOrder.forEach(catName => {
+      // Categorie non previste (es. nome scritto diverso) vanno in fondo invece di sparire dal menu
+      const allCategories = categoriesOrder.concat(Object.keys(grouped).filter(cat => !categoriesOrder.includes(cat)));
+
+      allCategories.forEach(catName => {
         if (grouped[catName] && grouped[catName].length > 0) {
           navHtml += `
             <div class="mb-4">
               <div class="flex items-center justify-between px-2 py-1 mb-1 text-[11px] font-bold text-stone-400 uppercase tracking-wider">
                 <span>${catName}</span>
-                <span class="bg-stone-200 dark:bg-stone-800 text-stone-600 dark:text-stone-300 px-1.5 py-0.2 rounded-full text-[10px] font-sans">${grouped[catName].length}</span>
+                <span class="bg-stone-200 dark:bg-stone-800 text-stone-600 dark:text-stone-300 px-1.5 py-0.5 rounded-full text-[10px] font-sans">${grouped[catName].length}</span>
               </div>
               <div class="space-y-1">
                 ${grouped[catName].map(recipe => {
@@ -1520,7 +1531,10 @@
 
       // Dark Mode Toggle
       document.getElementById('darkModeToggle')?.addEventListener('click', () => {
-        document.documentElement.classList.toggle('dark');
+        const isDark = document.documentElement.classList.toggle('dark');
+        try {
+          localStorage.setItem('ricettario-tema', isDark ? 'scuro' : 'chiaro');
+        } catch (e) {}
       });
 
       // Ricerca
