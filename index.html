@@ -90,13 +90,16 @@
       <!-- Filtri Categoria Veloci -->
       <div class="flex items-center space-x-1.5 overflow-x-auto custom-scrollbar pb-1 text-xs" id="categoryFilterContainer">
         <button data-cat="all" class="cat-filter-btn px-2.5 py-1 rounded-full bg-amber-600 text-white font-medium shadow-sm transition-all whitespace-nowrap">
-          Tutti
+          Tutte
         </button>
         <button data-cat="Lievitati Salati" class="cat-filter-btn px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-amber-100 dark:hover:bg-amber-900/40 font-medium transition-all whitespace-nowrap">
           Salati
         </button>
         <button data-cat="Panificazione" class="cat-filter-btn px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-amber-100 dark:hover:bg-amber-900/40 font-medium transition-all whitespace-nowrap">
           Pane
+        </button>
+        <button data-cat="Lievitati Dolci" class="cat-filter-btn px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-amber-100 dark:hover:bg-amber-900/40 font-medium transition-all whitespace-nowrap">
+          Lievitati dolci
         </button>
         <button data-cat="Dolci & Biscotti" class="cat-filter-btn px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-amber-100 dark:hover:bg-amber-900/40 font-medium transition-all whitespace-nowrap">
           Dolci
@@ -330,19 +333,20 @@
         subtitle: "Scioglievolezza Sablé Artigianale",
         category: "Dolci & Biscotti",
         icon: "fa-cookie",
-        yield: "Circa 25-30 biscotti",
+        yield: "Circa [[#28]] biscotti da [[@26]] g (impasto crudo)",
+        scaling: { pieces: 28, pieceWeight: 26, label: "biscotti" },
         equipment: "Mattarello, Fogli di Carta Forno, Stampo 5cm",
         tags: ["Frolla Sablé", "Aroma Limone", "Riposo Lungo"],
         ingredients: [
           {
             section: "Ingredienti",
             items: [
-              "<strong>Farina 00 debole (Proteine 9-10%):</strong> 310 g",
-              "<strong>Amido di mais (Maizena):</strong> 37 g",
-              "<strong>Burro di alta qualità (freddissimo di frigo):</strong> 200 g",
-              "<strong>Zucchero a velo:</strong> 125 g",
-              "<strong>Tuorli d'uovo grandi:</strong> 2 (più un goccio d'albume solo se necessario)",
-              "<strong>Limoni biologici:</strong> Scorza grattugiata di 2 limoni grandi + 20 ml (circa 1 cucchiaio abbondante) di succo filtrato",
+              "<strong>Farina 00 debole (Proteine 9-10%):</strong> [[310]] g",
+              "<strong>Amido di mais (Maizena):</strong> [[37]] g",
+              "<strong>Burro di alta qualità (freddissimo di frigo):</strong> [[200]] g",
+              "<strong>Zucchero a velo:</strong> [[125]] g",
+              "<strong>Tuorli d'uovo grandi:</strong> [[2]] (più un goccio d'albume solo se necessario)",
+              "<strong>Limoni biologici:</strong> Scorza grattugiata di [[2]] limoni grandi + [[20]] ml (circa 1 cucchiaio abbondante) di succo filtrato",
               "<strong>Sale fino:</strong> 1 pizzico generoso"
             ]
           }
@@ -452,21 +456,22 @@
         subtitle: "Senza Zucchero con Eritritolo",
         category: "Fitness & Wellness",
         icon: "fa-cube",
-        yield: "Circa 4 waffle grandi (2 persone)",
+        yield: "Circa [[#4]] waffle grandi da [[@99]] g di pastella",
+        scaling: { pieces: 4, pieceWeight: 99, label: "waffle" },
         equipment: "Bimby TM5, Tostiera/Piastra per Waffle",
         tags: ["Proteico", "Senza Zucchero", "Bimby TM5", "Low Carb"],
         ingredients: [
           {
-            section: "Dosi per 4 Waffle",
+            section: "Dosi per [[#4]] Waffle",
             items: [
-              "<strong>Uova intere biologiche (fresche, medie):</strong> 2 uova (circa 110 g totali)",
-              "<strong>Yogurt Greco 0%:</strong> 150 g (1 vasetto abbondante)",
-              "<strong>Farina di Farro integrale o Tipo 1:</strong> 90 g",
-              "<strong>Eritritolo:</strong> 30 g <em>(Zero calorie, zero impatto glicemico)</em>",
-              "<strong>Lievito vanigliato per dolci:</strong> 6 g (1 cucchiaino pieno)",
+              "<strong>Uova intere biologiche (fresche, medie):</strong> [[2]] uova (circa [[110]] g totali)",
+              "<strong>Yogurt Greco 0%:</strong> [[150]] g (1 vasetto abbondante)",
+              "<strong>Farina di Farro integrale o Tipo 1:</strong> [[90]] g",
+              "<strong>Eritritolo:</strong> [[30]] g <em>(Zero calorie, zero impatto glicemico)</em>",
+              "<strong>Lievito vanigliato per dolci:</strong> [[6]] g ([[1]] cucchiaino pieno)",
               "<strong>Scorza grattugiata di 1/2 limone biologico o cannella:</strong> q.b.",
-              "<strong>Olio Extravergine d'Oliva delicato (o acqua):</strong> 10 g (1 cucchiaio)",
-              "<strong>Pizzico di sale fino:</strong> 1 g"
+              "<strong>Olio Extravergine d'Oliva delicato (o acqua):</strong> [[10]] g ([[1]] cucchiaio)",
+              "<strong>Pizzico di sale fino:</strong> [[1]] g"
             ]
           }
         ],
@@ -475,7 +480,7 @@
             title: "Il Procedimento Passo Passo dello Chef (Bimby TM5)",
             items: [
               "<strong>La polverizzazione dell'Eritritolo (Segreto n° 1):</strong> Metti l'eritritolo nel boccale asciutto del Bimby TM5. Polverizza per <strong>7 secondi a Velocità 10</strong>. Ottenere uno 'zucchero a velo' farà sì che si sciolga all'istante.",
-              "<strong>L'emulsione con uova e yogurt (Segreto n° 2):</strong> Aggiungi nel boccale le 2 uova intere, lo yogurt greco 0%, l'olio EVO e il sale. Aziona <strong>30 secondi a Velocità 4</strong> per creare una crema vellutata e ben ariosa.",
+              "<strong>L'emulsione con uova e yogurt (Segreto n° 2):</strong> Aggiungi nel boccale le [[2]] uova intere, lo yogurt greco 0%, l'olio EVO e il sale. Aziona <strong>30 secondi a Velocità 4</strong> per creare una crema vellutata e ben ariosa.",
               "<strong>Integrazione delle polveri:</strong> Aggiungi la farina di farro, il lievito e gli aromi. Lavora per <strong>20 secondi a Velocità 3.5</strong>. Raccogli con la spatola la farina dalle pareti e dai un colpo finale di <strong>5 secondi a Velocità 4</strong>. Non lavorare oltre per non sviluppare troppo glutine.",
               "<strong>Il riposo tecnico dell'impasto (Segreto n° 3):</strong> Lascia riposare la pastella per <strong>10-15 minuti</strong> per far assorbire l'umidità alle fibre della farina.",
               "<strong>Cottura:</strong> Preriscalda la piastra per waffle alla massima potenza e spennellala con un velo d'olio. Versa un mestolo di pastella, chiudi e cuoci per <strong>4-5 minuti</strong>. <em>Non aprire nei primi 3 minuti!</em>"
@@ -595,24 +600,25 @@
         subtitle: "Metodo Frigo 12+ ore & Zero Sprechi",
         category: "Lievitati Dolci",
         icon: "fa-cookie-bite",
-        yield: "14 Pangoccioli (~70-75 g ciascuno)",
+        yield: "[[#14]] Pangoccioli da circa [[@83]] g (impasto crudo)",
+        scaling: { pieces: 14, pieceWeight: 83, label: "pangoccioli" },
         equipment: "Bimby TM5, Forno Glem Gas Specialista SA66IX",
         tags: ["Metodo Frigo 12+ h", "Zero Sprechi", "Zero Strutto/Margarina", "Maturazione a Freddo"],
         ingredients: [
           {
-            section: "Ingredienti per 14 Pangoccioli alla Banana",
+            section: "Ingredienti per [[#14]] Pangoccioli alla Banana",
             items: [
-              "<strong>Farina Manitoba:</strong> 400 g",
-              "<strong>Farina 00 (forza media, W 260-280):</strong> 100 g",
-              "<strong>Banane mature congelate:</strong> 250 g di polpa (pesata già sbucciata)",
-              "<strong>Latte intero fresco:</strong> 100 g (a temperatura ambiente)",
-              "<strong>Zucchero semolato:</strong> 70 g",
-              "<strong>Burro (82% materia grassa, a pomata):</strong> 70 g <em>(zero strutto, zero margarina)</em>",
-              "<strong>Lievito di birra fresco:</strong> 8 g <em>(dosato per la lunga sosta a freddo)</em>",
-              "<strong>Uovo medio:</strong> 1 (circa 50 g)",
-              "<strong>Sale fino:</strong> 6 g",
-              "<strong>Estratto di vaniglia in pasta:</strong> 1 cucchiaio",
-              "<strong>Gocce di cioccolato fondente:</strong> 100 g <em>(tenute in freezer fino all'inserimento)</em>"
+              "<strong>Farina Manitoba:</strong> [[400]] g",
+              "<strong>Farina 00 (forza media, W 260-280):</strong> [[100]] g",
+              "<strong>Banane mature congelate:</strong> [[250]] g di polpa (pesata già sbucciata)",
+              "<strong>Latte intero fresco:</strong> [[100]] g (a temperatura ambiente)",
+              "<strong>Zucchero semolato:</strong> [[70]] g",
+              "<strong>Burro (82% materia grassa, a pomata):</strong> [[70]] g <em>(zero strutto, zero margarina)</em>",
+              "<strong>Lievito di birra fresco:</strong> [[8]] g <em>(dosato per la lunga sosta a freddo)</em>",
+              "<strong>Uovo medio:</strong> [[1]] (circa [[50]] g)",
+              "<strong>Sale fino:</strong> [[6]] g",
+              "<strong>Estratto di vaniglia in pasta:</strong> [[1]] cucchiaio",
+              "<strong>Gocce di cioccolato fondente:</strong> [[100]] g <em>(tenute in freezer fino all'inserimento)</em>"
             ]
           }
         ],
@@ -627,7 +633,7 @@
           {
             title: "2. Attivazione e Impasto nel Bimby TM5",
             items: [
-              "Nel boccale del Bimby inserisci il latte a temperatura ambiente, il lievito di birra fresco spezzettato e 1 cucchiaino di zucchero dal totale. Avvia: <strong>1 Minuto / 37°C / Velocità 2</strong>.",
+              "Nel boccale del Bimby inserisci il latte a temperatura ambiente, il lievito di birra fresco spezzettato e [[1]] cucchiaino di zucchero dal totale. Avvia: <strong>1 Minuto / 37°C / Velocità 2</strong>.",
               "Aggiungi la purea di banane, l'uovo, la farina Manitoba, la farina 00 e lo zucchero rimanente.",
               "Avvia la modalità impasto: <strong>2 Minuti / Funzione Spiga</strong>."
             ]
@@ -652,7 +658,7 @@
             title: "5. Acclimatamento, Formatura e Seconda Lievitazione",
             items: [
               "La mattina seguente, estrai l'impasto dal frigo e lascialo <strong>acclimatare sul banco per 45-60 minuti</strong>.",
-              "Rovescia l'impasto, sgonfialo delicatamente e dividilo in <strong>14 porzioni precise da circa 70-75 g</strong>.",
+              "Rovescia l'impasto, sgonfialo delicatamente e dividilo in <strong>[[#14]] porzioni precise da circa [[@83]] g</strong>.",
               "<strong>Pirlatura:</strong> Fai rotolare ogni pezzetto sotto il palmo della mano direttamente sul piano di lavoro nudo (sfruttando l'attrito per creare tensione). Inumidisci appena i polpastrelli con acqua se necessario, ma mai il banco.",
               "Disponi i pangoccioli su teglie con carta forno, copri con un panno e fai lievitare nel forno spento con luce accesa per <strong>1,5 - 2 ore</strong>.",
               "Spennella delicatamente la superficie con un'emulsione di <strong>tuorlo e latte</strong>."
@@ -689,6 +695,204 @@
         }
       },
       {
+        id: "pangoccioli-arancia-vaniglia",
+        title: "Pangoccioli Sofficissimi all'Arancia e Vaniglia",
+        subtitle: "Tangzhong, Gocce di Fondente e 16 ore in Frigo",
+        category: "Lievitati Dolci",
+        icon: "fa-cookie-bite",
+        yield: "12 Pangoccioli (~73 g ciascuno da cotti)",
+        equipment: "Bimby TM5, Macchina del pane Hitachi HB-B100, Forno Glem Gas Specialista SA66IX, secondo forno, bacinella di vetro",
+        tags: ["Tangzhong", "Metodo Frigo 16 h", "Arancia & Vaniglia", "Zero Sprechi"],
+        ingredients: [
+          {
+            section: "Tangzhong",
+            items: [
+              "<strong>Farina Manitoba:</strong> 20 g",
+              "<strong>Latte intero:</strong> 100 g"
+            ]
+          },
+          {
+            section: "Impasto",
+            items: [
+              "<strong>Farina Manitoba:</strong> 230 g",
+              "<strong>Farina 00 (W 220-250):</strong> 150 g",
+              "<strong>Latte intero:</strong> 100 g <em>(freddo di frigo)</em>",
+              "<strong>Uovo intero medio:</strong> 50 g <em>(sgusciato)</em>",
+              "<strong>Zucchero semolato:</strong> 60 g",
+              "<strong>Miele (millefiori o di zagara):</strong> 15 g",
+              "<strong>Lievito di birra fresco:</strong> 5 g <em>(oppure 2 g secco)</em>",
+              "<strong>Sale fino:</strong> 6 g",
+              "<strong>Burro di centrifuga:</strong> 70 g <em>(morbido, 18-20 °C)</em>"
+            ]
+          },
+          {
+            section: "Aromi e Farcitura",
+            items: [
+              "<strong>Arancia non trattata:</strong> 1 <em>(solo la scorza)</em>",
+              "<strong>Bacca di vaniglia:</strong> 1/2 <em>(solo i semi)</em>",
+              "<strong>Gocce di cioccolato fondente:</strong> 150 g <em>(tenute in freezer)</em>"
+            ]
+          },
+          {
+            section: "Per Lucidare e Spennellare",
+            items: [
+              "<strong>Tuorlo:</strong> 1",
+              "<strong>Latte:</strong> 15 g",
+              "<strong>Burro chiarificato o fuso:</strong> 20 g <em>(per spennellare dopo la cottura)</em>"
+            ]
+          }
+        ],
+        steps: [
+          {
+            title: "1. Congela le gocce (30 minuti)",
+            items: [
+              "Metti le 150 g di gocce di cioccolato fondente in freezer per almeno <strong>30 minuti</strong>. Da fredde non si sciolgono mentre le incorpori e non sporcano l'impasto."
+            ]
+          },
+          {
+            title: "2. Zucchero aromatizzato (Bimby)",
+            items: [
+              "Con il pelapatate preleva la scorza dell'arancia, solo la parte arancione: il bianco è amaro.",
+              "Nel boccale asciutto metti i 60 g di zucchero, la scorza e i semi di 1/2 bacca di vaniglia: <strong>15 sec / vel 10</strong>.",
+              "Trasferisci lo zucchero in una ciotolina. Il boccale non serve lavarlo."
+            ]
+          },
+          {
+            title: "3. Tangzhong (Bimby)",
+            items: [
+              "Nello stesso boccale metti 20 g di farina Manitoba e 100 g di latte intero: <strong>4 min / 65 °C / vel 3</strong>.",
+              "Deve diventare una cremina densa e lucida. Versala in una ciotola, copri con pellicola a contatto e lasciala arrivare a temperatura ambiente."
+            ]
+          },
+          {
+            title: "4. Carica la macchina del pane",
+            items: [
+              "Nel cestello della Hitachi metti in quest'ordine: 100 g di latte freddo, 50 g di uovo, il tangzhong, 15 g di miele e lo zucchero aromatizzato.",
+              "Sopra aggiungi 230 g di farina Manitoba e 150 g di farina 00, poi 5 g di lievito sbriciolato al centro e 6 g di sale in un angolo, <strong>lontano dal lievito</strong>."
+            ]
+          },
+          {
+            title: "5. Impasta e unisci il burro (25 minuti)",
+            items: [
+              "Avvia il programma <strong>Impasto</strong>.",
+              "Dopo <strong>10-12 minuti</strong>, quando l'impasto si è staccato dalle pareti, aggiungi i 70 g di burro un pezzetto alla volta, sempre dopo che il precedente è stato assorbito.",
+              "Lascia impastare fino a circa <strong>25 minuti in tutto</strong>, finché è liscio, lucido ed elastico."
+            ]
+          },
+          {
+            title: "6. Prova del velo e stop",
+            items: [
+              "Ferma la macchina prima che inizi l'eventuale fase di lievitazione.",
+              "Prendi un pezzetto di impasto e allargalo con le dita: deve formare una membrana sottile e semitrasparente senza strapparsi. Se si strappa, impasta altri 3-4 minuti.",
+              "A fine lavorazione l'impasto deve stare tra <strong>24 e 26 °C</strong>."
+            ]
+          },
+          {
+            title: "7. Incorpora le gocce",
+            items: [
+              "Su un piano non infarinato allarga l'impasto a rettangolo.",
+              "Distribuisci metà delle gocce appena uscite dal freezer, ripiega in tre come un foglio e stendi di nuovo.",
+              "Aggiungi il resto delle gocce e ripiega ancora. Forma una palla tesa."
+            ]
+          },
+          {
+            title: "8. Avvio nella bacinella di vetro (50 minuti)",
+            items: [
+              "Imburra leggermente la bacinella di vetro e mettici la palla con la chiusura sotto.",
+              "Chiudi con pellicola ben tesa, meglio con <strong>due giri</strong>, perché in frigo l'aria secca la superficie.",
+              "Con un pezzo di nastro adesivo sull'esterno segna il livello dell'impasto: ti servirà per capire quando è raddoppiato.",
+              "Lascia la bacinella a temperatura ambiente per <strong>45-60 minuti</strong>, finché l'impasto cresce di circa un terzo."
+            ]
+          },
+          {
+            title: "9. Lievitazione in massa in frigo (16 ore)",
+            items: [
+              "Metti la bacinella sul ripiano centrale del frigo (4-5 °C), non vicino allo sportello, per <strong>14-16 ore</strong>.",
+              "Al mattino l'impasto deve essere circa raddoppiato rispetto al segno.",
+              "Il vetro si raffredda più lentamente della plastica, quindi nelle prime ore l'impasto lavora un po' di più. Se lo trovi molto oltre il doppio, la volta successiva fermati a 14 ore."
+            ]
+          },
+          {
+            title: "10. Forma le cupole (da freddo)",
+            items: [
+              "Tira fuori l'impasto e lavoralo subito, ancora freddo.",
+              "Con la bilancia dividilo in <strong>12 pezzi da circa 80 g</strong>.",
+              "Pirla ognuno a pallina ben tesa, facendolo ruotare sul piano con la mano a coppa, e porta la chiusura sotto. Schiacciala appena con il palmo, così in cottura si allarga a cupola.",
+              "Disponi le palline su una teglia con carta forno, distanziate di 4 cm."
+            ]
+          },
+          {
+            title: "11. Seconda lievitazione nel secondo forno (2 ore 45 minuti)",
+            items: [
+              "Copri la teglia con pellicola leggermente unta.",
+              "Mettila nel secondo forno, spento, con un pentolino d'acqua bollente sul fondo: dentro arriverai a circa <strong>26-28 °C</strong>.",
+              "Lascia lievitare <strong>2 h 30 – 3 h</strong>, finché le cupole quasi raddoppiano.",
+              "Fai la prova del dito: premendo, l'impronta deve risalire lentamente senza sparire del tutto."
+            ]
+          },
+          {
+            title: "12. Preriscalda il forno a gas (20 minuti)",
+            items: [
+              "Negli ultimi 25 minuti di lievitazione accendi il forno a gas Glem in modalità <strong>statica a 180 °C</strong>.",
+              "Metti una teglia vuota sul ripiano più basso, che fa da scudo al calore del bruciatore, e lascia stabilizzare il forno per almeno 20 minuti."
+            ]
+          },
+          {
+            title: "13. Prepara il secondo forno e lucida",
+            items: [
+              "Tira fuori la teglia dal secondo forno, togli il pentolino e lascia lo sportello spalancato: deve asciugarsi e tornare a temperatura ambiente, perché ti servirà per il raffreddamento.",
+              "Sbatti il tuorlo con 15 g di latte e spennella le cupole con un pennello morbido, senza far colare il liquido sulla carta."
+            ]
+          },
+          {
+            title: "14. Cuoci (17 minuti)",
+            items: [
+              "Inforna sul ripiano centrale a <strong>180 °C, forno statico a gas, per 16-18 minuti</strong>. Non aprire il forno nei primi 10 minuti.",
+              "A 2/3 della cottura gira la teglia di 180° per avere una doratura uniforme.",
+              "Sono pronti quando sono dorati e al cuore segnano <strong>92-94 °C</strong>."
+            ]
+          },
+          {
+            title: "15. Burro e raffreddamento (35 minuti)",
+            items: [
+              "Appena sfornati, spennellali subito con i 20 g di burro chiarificato o fuso caldo.",
+              "Spostali su una griglia e mettila nel secondo forno spento e freddo, con lo sportello socchiuso di 2-3 cm: puoi bloccarlo con il manico di un cucchiaio di legno.",
+              "Dopo <strong>30-40 minuti</strong>, quando sono appena tiepidi (circa 35 °C), chiudili in un sacchetto per alimenti."
+            ]
+          }
+        ],
+        chefTips: [
+          "<strong>Il tangzhong a 65 °C</strong> fa gelatinizzare l'amido, che così trattiene l'acqua: la mollica resta soffice per giorni.",
+          "<strong>Latte freddo e burro aggiunto a metà impasto</strong> tengono l'impasto sotto i 26 °C e lasciano formare bene la maglia glutinica.",
+          "<strong>Con il vetro, pellicola a doppio giro e nastro per segnare il livello.</strong> Così vedi a colpo d'occhio quando l'impasto è raddoppiato e la superficie non si secca in frigo.",
+          "<strong>Forma l'impasto da freddo:</strong> il burro rassodato lo rende compatto, le cupole vengono tese e regolari.",
+          "<strong>Il secondo forno va asciugato tra un uso e l'altro.</strong> Se resta l'umidità del pentolino, nel raffreddamento la crosta si bagna.",
+          "<strong>Zero sprechi – albume avanzato:</strong> congelalo e mettilo da parte. Con 3-4 albumi fai una frittata leggera o delle lingue di gatto.",
+          "<strong>Zero sprechi – arancia senza scorza:</strong> spremila subito.",
+          "<strong>Zero sprechi – baccello di vaniglia svuotato:</strong> mettilo nel barattolo dello zucchero.",
+          "<strong>Zero sprechi – pangoccioli raffermi:</strong> usali per un pudding di pane o un french toast."
+        ],
+        technicalNotes: [
+          "<strong>Resa:</strong> 12 pangoccioli da circa 73 g da cotti.",
+          "<strong>Conservazione:</strong> 3 giorni nel sacchetto per alimenti ben chiuso. Puoi anche congelarli uno per uno e rigenerarli con 15 secondi al microonde oppure 5 minuti in forno a 150 °C.",
+          "<strong>Tabella di marcia:</strong> impasto alle 18, in frigo alle 19, fuori alle 10-11 del giorno dopo, in forno verso le 13:30-14."
+        ],
+        nutritionTable: {
+          title: "Scheda Nutrizionale (Per 100 g di prodotto finito)",
+          rows: [
+            { label: "Energia (Kcal)", value: "373 kcal" },
+            { label: "Proteine", value: "8,4 g" },
+            { label: "Carboidrati", value: "52,0 g" },
+            { label: "— di cui Zuccheri", value: "18,9 g" },
+            { label: "Grassi Totali", value: "14,8 g" },
+            { label: "— di cui Saturi", value: "8,7 g" },
+            { label: "— di cui Insaturi", value: "6,1 g" },
+            { label: "Fibre", value: "2,2 g" },
+            { label: "Sale", value: "0,7 g" }
+          ]
+        }
+      },
+      {
         id: "panna-montata-d-autore",
         title: "Panna Montata d'Autore",
         subtitle: "4 Preparazioni Tecniche con Calcolatore di Dose",
@@ -709,6 +913,114 @@
 
     // STATO DELL'APPLICAZIONE
 <!-- ... existing code -->
+    // RICALCOLO DOSI
+    // Nei testi delle ricette: [[400]] = quantità che si ricalcola, [[#14]] = numero di pezzi,
+    // [[@83]] = grammi di ogni pezzo (impasto crudo). Le ricette senza "scaling" non hanno marcatori.
+    const QTY_MARKER = /\[\[([#@]?)(\d+(?:[.,]\d+)?)\]\]/g;
+
+    function stripQtyMarkers(text) {
+      return text.replace(QTY_MARKER, '$2');
+    }
+
+    function formatQty(value) {
+      const rounded = value >= 10 ? Math.round(value) : Math.round(value * 10) / 10;
+      return String(rounded).replace('.', ',');
+    }
+
+    // Trasforma i marcatori in elementi aggiornabili. Negli ingredienti la prima quantità di ogni riga è un campo modificabile.
+    function qtyMarkup(text, editableFirst = false) {
+      let first = editableFirst;
+      return text.replace(QTY_MARKER, (match, kind, num) => {
+        const base = parseFloat(num.replace(',', '.'));
+        if (kind === '#') return `<span class="qty-pieces font-semibold">${formatQty(base)}</span>`;
+        if (kind === '@') return `<span class="qty-weight font-semibold">${formatQty(base)}</span>`;
+        if (first) {
+          first = false;
+          return `<input type="number" inputmode="decimal" min="0" step="any" value="${formatQty(base).replace(',', '.')}" data-base="${base}" aria-label="Quantità" class="qty-input w-16 px-1.5 py-0.5 mx-0.5 bg-white dark:bg-stone-800 border border-amber-300 dark:border-amber-700 rounded-md text-center font-semibold text-amber-800 dark:text-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-500">`;
+        }
+        return `<span class="qty font-semibold" data-base="${base}">${formatQty(base)}</span>`;
+      });
+    }
+
+    function scalingPanelHtml(scaling) {
+      return `
+        <div class="mb-6 bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200/80 dark:border-amber-800/50 rounded-xl p-4">
+          <div class="flex flex-wrap items-end gap-4">
+            <label class="flex flex-col text-xs font-semibold text-stone-600 dark:text-stone-400 uppercase tracking-wider">
+              Quanti ${scaling.label}
+              <input type="number" id="scalePieces" inputmode="numeric" min="1" step="1" value="${scaling.pieces}" class="mt-1 w-24 px-3 py-2 bg-white dark:bg-stone-900 border border-amber-300 dark:border-amber-700 rounded-xl font-bold text-amber-700 dark:text-amber-400 text-center text-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+            </label>
+            <label class="flex flex-col text-xs font-semibold text-stone-600 dark:text-stone-400 uppercase tracking-wider">
+              Grammi ciascuno (crudo)
+              <input type="number" id="scaleWeight" inputmode="decimal" min="1" step="any" value="${scaling.pieceWeight}" class="mt-1 w-24 px-3 py-2 bg-white dark:bg-stone-900 border border-amber-300 dark:border-amber-700 rounded-xl font-bold text-amber-700 dark:text-amber-400 text-center text-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+            </label>
+            <button type="button" id="scaleReset" class="px-3 py-2 bg-white dark:bg-stone-900 hover:bg-amber-600 hover:text-white border border-stone-200 dark:border-stone-800 rounded-xl text-xs font-semibold transition-all">
+              <i class="fa-solid fa-rotate-left mr-1"></i> Dosi originali
+            </button>
+          </div>
+          <p class="text-xs text-stone-500 dark:text-stone-400 mt-3">Puoi anche cambiare un singolo ingrediente: tutti gli altri, e le dosi nei passaggi, si ricalcolano in proporzione. Tempi e temperature restano quelli della ricetta.</p>
+        </div>
+      `;
+    }
+
+    function initScaling(scaling) {
+      const baseTotal = scaling.pieces * scaling.pieceWeight;
+      const piecesInput = document.getElementById('scalePieces');
+      const weightInput = document.getElementById('scaleWeight');
+      let pieces = scaling.pieces;
+      let factor = 1;
+
+      function apply(skip) {
+        const weight = baseTotal * factor / pieces;
+        document.querySelectorAll('#recipeContainer .qty').forEach(el => {
+          el.textContent = formatQty(parseFloat(el.dataset.base) * factor);
+        });
+        document.querySelectorAll('#recipeContainer .qty-input').forEach(el => {
+          if (el !== skip) el.value = formatQty(parseFloat(el.dataset.base) * factor).replace(',', '.');
+        });
+        document.querySelectorAll('#recipeContainer .qty-pieces').forEach(el => { el.textContent = formatQty(pieces); });
+        document.querySelectorAll('#recipeContainer .qty-weight').forEach(el => { el.textContent = formatQty(weight); });
+        if (skip !== piecesInput) piecesInput.value = pieces;
+        if (skip !== weightInput) weightInput.value = formatQty(weight).replace(',', '.');
+      }
+
+      function readPositive(input) {
+        const v = parseFloat(String(input.value).replace(',', '.'));
+        return v > 0 ? v : null;
+      }
+
+      piecesInput.addEventListener('input', () => {
+        const p = readPositive(piecesInput);
+        const w = readPositive(weightInput);
+        if (!p || !w) return;
+        pieces = p;
+        factor = (p * w) / baseTotal;
+        apply(piecesInput);
+      });
+
+      weightInput.addEventListener('input', () => {
+        const w = readPositive(weightInput);
+        if (!w) return;
+        factor = (pieces * w) / baseTotal;
+        apply(weightInput);
+      });
+
+      document.querySelectorAll('#recipeContainer .qty-input').forEach(input => {
+        input.addEventListener('input', () => {
+          const v = readPositive(input);
+          if (!v) return;
+          factor = v / parseFloat(input.dataset.base);
+          apply(input);
+        });
+      });
+
+      document.getElementById('scaleReset').addEventListener('click', () => {
+        pieces = scaling.pieces;
+        factor = 1;
+        apply(null);
+      });
+    }
+
     // FUNZIONE RENDER PRINCIPALE RICETTA
     function renderRecipe(recipe) {
       const container = document.getElementById('recipeContainer');
@@ -740,7 +1052,7 @@
                 </div>
                 <div>
                   <div class="text-xs text-stone-400 uppercase font-bold tracking-wider">Resa / Porzioni</div>
-                  <div class="font-medium">${recipe.yield}</div>
+                  <div class="font-medium">${qtyMarkup(recipe.yield)}</div>
                 </div>
               </div>
               <div class="flex items-center space-x-3 text-stone-700 dark:text-stone-300">
@@ -798,15 +1110,16 @@
               <h2 class="text-xl font-bold font-serif text-stone-900 dark:text-white mb-4 flex items-center">
                 <i class="fa-solid fa-list-check text-amber-600 mr-2.5"></i> Ingredienti
               </h2>
+              ${recipe.scaling ? scalingPanelHtml(recipe.scaling) : ''}
               <div class="grid grid-cols-1 ${recipe.ingredients.length > 1 ? 'md:grid-cols-2' : ''} gap-6">
                 ${recipe.ingredients.map(group => `
                   <div class="bg-stone-50 dark:bg-stone-900/60 rounded-xl p-5 border border-stone-200/80 dark:border-stone-800">
-                    <h3 class="font-bold text-amber-800 dark:text-amber-400 text-sm tracking-wide uppercase mb-3 border-b border-stone-200 dark:border-stone-800 pb-2">${group.section}</h3>
+                    <h3 class="font-bold text-amber-800 dark:text-amber-400 text-sm tracking-wide uppercase mb-3 border-b border-stone-200 dark:border-stone-800 pb-2">${qtyMarkup(group.section)}</h3>
                     <ul class="space-y-2 text-sm text-stone-700 dark:text-stone-300">
                       ${group.items.map(item => `
                         <li class="flex items-start">
                           <input type="checkbox" class="mt-1 mr-2.5 rounded text-amber-600 focus:ring-amber-500 border-stone-300 dark:border-stone-700 dark:bg-stone-800">
-                          <span>${item}</span>
+                          <span>${qtyMarkup(item, true)}</span>
                         </li>
                       `).join('')}
                     </ul>
@@ -831,7 +1144,7 @@
                       ${step.title}
                     </h3>
                     <ul class="space-y-2.5 text-stone-700 dark:text-stone-300 text-sm leading-relaxed pl-2 border-l-2 border-amber-200 dark:border-amber-900/50">
-                      ${step.items.map(item => `<li class="pl-2">${item}</li>`).join('')}
+                      ${step.items.map(item => `<li class="pl-2">${qtyMarkup(item)}</li>`).join('')}
                     </ul>
                   </div>
                 `).join('')}
@@ -900,6 +1213,8 @@
 
       html += `</div>`;
       container.innerHTML = html;
+
+      if (recipe.scaling) initScaling(recipe.scaling);
 
       // Se la ricetta è il calcolatore di panna montata, attiva i listener e renderizza
       if (recipe.isWhippedCreamCalculator) {
@@ -1105,7 +1420,7 @@
         const matchesQuery = searchFilterQuery === "" || 
           r.title.toLowerCase().includes(searchFilterQuery.toLowerCase()) || 
           r.subtitle.toLowerCase().includes(searchFilterQuery.toLowerCase()) ||
-          (r.ingredients && r.ingredients.some(ig => ig.items.some(it => it.toLowerCase().includes(searchFilterQuery.toLowerCase()))));
+          (r.ingredients && r.ingredients.some(ig => ig.items.some(it => stripQtyMarkers(it).toLowerCase().includes(searchFilterQuery.toLowerCase()))));
         return matchesCategory && matchesQuery;
       });
 
