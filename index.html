@@ -183,8 +183,8 @@
         subtitle: "Metodo Massa a Freddo",
         category: "Lievitati Salati",
         icon: "fa-pizza-slice",
-        yield: "[[#3]] panetti da [[@230]] g (Diametro 28 cm)",
-        scaling: { pieces: 3, pieceWeight: 230, label: "panetti" },
+        yield: "[[#3]] panetti da [[@228]] g (Diametro 28 cm)",
+        scaling: { pieces: 3, pieceWeight: 228, label: "panetti" },
         equipment: "Macchina del pane Hitachi HB-B100, Fornetto Ariete Pizzeria 927 Doppio",
         tags: ["Idratazione 62%", "Massa a Freddo", "Lunga Lievitazione"],
         ingredients: [
@@ -232,7 +232,7 @@
           {
             title: "FASE 3: STAGLIO E APPRETTO (4 ore prima della cottura)",
             items: [
-              "<strong>Taglio a freddo:</strong> Tira fuori la ciotola dal frigo, rovescia la massa sul banco e tagliala subito in <strong>[[#3]] pezzi esatti da [[@230]] g</strong> (usa la bilancia!).",
+              "<strong>Taglio a freddo:</strong> Tira fuori la ciotola dal frigo, rovescia la massa sul banco e tagliala subito in <strong>[[#3]] pezzi esatti da [[@228]] g</strong> (usa la bilancia!).",
               "<strong>La Pirlatura a sfera:</strong> Prendi ogni pezzo, porta i bordi esterni verso il centro per 4-5 volte a raggiera (creando un fagottino). Capovolgi il panetto con la chiusura verso il banco e rotealo con le mani a coppa per tendere la superficie in una 'pelle' liscia.",
               "<strong>Il Risveglio:</strong> Spolvera di semola una teglia, adagia i panetti distanziati e sigilla benissimo con pellicola. Lasciali nel forno spento per <strong>4 ore</strong>. Sfruttando il clima di Catania, la temperatura ambiente è perfetta per farli raddoppiare in modo naturale ed equilibrato."
             ]
@@ -274,8 +274,8 @@
         subtitle: "Pancarrè al Burro e Latte",
         category: "Panificazione",
         icon: "fa-bread-slice",
-        yield: "Pagnotte a cassetta: [[#1]], da circa [[@850]] g",
-        scaling: { pieces: 1, pieceWeight: 850, label: "pagnotte", weightNote: "della pagnotta (cotta)" },
+        yield: "Pagnotte a cassetta: [[#1]], da circa [[@906]] g di impasto crudo",
+        scaling: { pieces: 1, pieceWeight: 906, label: "pagnotte" },
         equipment: "Macchina del pane Hitachi HB-B100",
         tags: ["Soffice", "Crosta Finissima", "Anti-Spreco"],
         ingredients: [
@@ -401,8 +401,8 @@
         subtitle: "Con Cannella e Gocce di Fondente",
         category: "Lievitati Dolci",
         icon: "fa-stroopwafel",
-        yield: "Pagnotte formato grande: [[#1]], da ~[[@850]] g",
-        scaling: { pieces: 1, pieceWeight: 850, label: "pagnotte", weightNote: "della pagnotta (cotta)" },
+        yield: "Pagnotte formato grande: [[#1]], da circa [[@1275]] g di impasto crudo",
+        scaling: { pieces: 1, pieceWeight: 1275, label: "pagnotte" },
         equipment: "Macchina del pane Hitachi HB-B100",
         tags: ["Miele Zagara", "Cioccolato", "Aromatico"],
         ingredients: [
@@ -517,8 +517,8 @@
         subtitle: "al Moscovado e Patata Rossa",
         category: "Panificazione",
         icon: "fa-hamburger",
-        yield: "[[#8]] panini da circa [[@100]] g ciascuno",
-        scaling: { pieces: 8, pieceWeight: 100, label: "panini" },
+        yield: "[[#8]] panini da circa [[@117]] g ciascuno (impasto crudo)",
+        scaling: { pieces: 8, pieceWeight: 117, label: "panini" },
         equipment: "Friggitrice ad aria, Bimby TM5, Hitachi HB-B100, Forno Glem Gas",
         tags: ["Maturazione Overnight", "Zero Sprechi", "Smash Burger"],
         ingredients: [
@@ -574,7 +574,7 @@
           {
             title: "FASE 4: STAGLIO, PIRLATURA E SECONDA LIEVITAZIONE",
             items: [
-              "<strong>Staglio:</strong> Dividi l'impasto freddo in <strong>[[#8]] porzioni uguali da circa [[@100]] g</strong>.",
+              "<strong>Staglio:</strong> Dividi l'impasto freddo in <strong>[[#8]] porzioni uguali da circa [[@117]] g</strong>.",
               "<strong>Pirlatura:</strong> Forma palline sferiche ben tese ruotandole sul piano imburrato (senza farina).",
               "<strong>Lievitazione:</strong> Disponi su teglia, appiattisci leggermente e metti nel forno Glem Gas spento con luce accesa per <strong>60-90 minuti</strong> (fino al raddoppio)."
             ]
@@ -1124,7 +1124,7 @@
 
     // RICALCOLO DOSI
     // Nei testi delle ricette: [[400]] = quantità che si ricalcola, [[#14]] = numero di pezzi,
-    // [[@83]] = grammi di ogni pezzo (impasto crudo, o pagnotta cotta se "weightNote" lo dice).
+    // [[@83]] = grammi di ogni pezzo (impasto crudo, somma degli ingredienti diviso il numero di pezzi).
     // Le ricette senza "scaling" non hanno marcatori.
     const QTY_MARKER = /\[\[([#@]?)(\d+(?:[.,]\d+)?)\]\]/g;
 
