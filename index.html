@@ -1382,14 +1382,28 @@
         category: "Dolci & Biscotti",
         icon: "fa-ice-cream",
         yield: "Personalizzabile (Calcolatore Dinamico)",
-        equipment: "Bimby TM5 (Farfalla), Frigorifero (4°C)",
-        tags: ["Calcolatore Dosi", "Bimby TM5", "Regola 4°C", "Pasticceria d'Autore"],
+        equipment: "Fruste elettriche, ciotola d'acciaio o di vetro, Frigorifero (4 °C)",
+        tags: ["Calcolatore Dosi", "Fruste Elettriche", "Regola 4°C", "Pasticceria d'Autore"],
         isWhippedCreamCalculator: true,
         ingredients: [],
         steps: [],
         chefTips: [
-          "<strong>Regola aurea della temperatura:</strong> Panna, boccale e farfalla devono essere a circa 4°C. Se il boccale si è scaldato, sciacqualo con acqua e ghiaccio ed asciugalo perfettamente.",
-          "<strong>Monitoraggio sensoriale:</strong> Nel Bimby TM5 non impostare mai il timer fisso. Ascolta l'audio delle lame: quando il suono cambia e diventa cupo/sordo, spegni immediatamente per non rischiare di separare il grasso e fare il burro."
+          "<strong>Il freddo è tutto:</strong> il grasso della panna monta solo se è solido, cioè sotto i 7-8 °C. Metti ciotola e fruste in freezer per 15 minuti. Tieni la panna in frigo per almeno 12 ore, sul ripiano più basso e non nello sportello, e tirala fuori solo al momento di montare.",
+          "<strong>La ciotola:</strong> di acciaio o di vetro, alta e con il fondo stretto. La plastica trattiene un velo di grasso che ostacola la montatura. Nelle giornate calde appoggiala dentro una ciotola più grande con ghiaccio e un pugno di sale.",
+          "<strong>Quantità minima:</strong> le fruste devono pescare almeno 3 cm di panna. In una ciotola normale servono almeno 250 g. Per 100-150 g usa il bicchiere alto del frullatore a immersione e una sola frusta.",
+          "<strong>Velocità e movimento:</strong> parti a velocità bassa (1-2) per 30 secondi, così si formano bolle piccole e fitte che rendono la panna stabile. Poi passa a velocità medio-alta (3-4 su 5), non al massimo: alla massima le bolle vengono grosse e la panna si smonta prima. Inclina un po' la ciotola e muovi le fruste in cerchio, raggiungendo fondo e bordi. Negli ultimi secondi torna a velocità bassa per controllare il punto esatto in cui fermarti.",
+          "<strong>Gli stadi:</strong> <em>semi-montata</em> = le fruste lasciano scie morbide che si richiudono lentamente, consistenza da yogurt denso. <em>Becco morbido</em> = sollevando le fruste si forma una punta che si piega su se stessa. <em>Becco fermo</em> = la punta resta dritta, la panna è lucida e compatta: il punto giusto per la sac à poche. <em>Troppo montata</em> = opaca, granulosa e giallina: fermati subito.",
+          "<strong>Se l'hai montata troppo:</strong> aggiungi 2-3 cucchiai di panna liquida fredda e mescola a mano con una frusta o una spatola, senza fruste elettriche. In pochi secondi torna liscia.",
+          "<strong>Panna fresca 35-38%, mai vegetale:</strong> quella vegetale è fatta di grassi idrogenati, come la margarina. La panna UHT a lunga conservazione monta peggio e sa meno di latte.",
+          "<strong>Zero sprechi – panna montata avanzata:</strong> fai dei ciuffetti con la sac à poche su carta forno, congelali, poi passali in un sacchetto. Sono perfetti per il caffè o la cioccolata calda.",
+          "<strong>Zero sprechi – panna diventata burro:</strong> non buttarla. Continua a montare finché si separa del tutto, scola il latticello e sciacqua il burro in acqua ghiacciata. Hai burro fresco, e il latticello è ottimo nei pancake o per ammorbidire impasti e marinature.",
+          "<strong>Zero sprechi – mascarpone avanzato:</strong> un cucchiaio nella crema al caffè, oppure in un risotto a fine cottura."
+        ],
+        technicalNotes: [
+          "<strong>Conservazione – classica e semi-montata:</strong> 24 ore in frigo, coperte. Se sul fondo si forma un po' di liquido, bastano 10 secondi di frusta a mano per rimontarla.",
+          "<strong>Conservazione – maritozzi e mascarpone:</strong> fino a 48 ore in frigo, coperte. Tengono la forma perché il mascarpone le stabilizza.",
+          "<strong>Sac à poche:</strong> riempila solo a metà. Il calore delle mani scalda la panna, quindi rimettila in frigo tra un utilizzo e l'altro.",
+          "<strong>Valori nutrizionali:</strong> ricalcolati. Nelle schede precedenti alla classica mancavano gli zuccheri della panna stessa e nella panna per maritozzi i grassi erano sovrastimati."
         ]
       }
     ];
@@ -1569,7 +1583,7 @@
                 <h3 class="text-xl font-bold font-serif text-stone-900 dark:text-white flex items-center gap-2">
                   <i class="fa-solid fa-calculator text-amber-600"></i> Calcolatore Dinamico Dosi Panna
                 </h3>
-                <p class="text-sm text-stone-600 dark:text-stone-400 mt-1">Seleziona o inserisci la quantità di panna base desiderata per calcolare le 4 preparazioni.</p>
+                <p class="text-sm text-stone-600 dark:text-stone-400 mt-1">Seleziona o inserisci il peso base per calcolare le 4 preparazioni. Classica e gelato: peso della panna. Maritozzi: peso totale di panna e mascarpone. Mascarpone: peso di ciascuno dei due.</p>
               </div>
               <div class="flex items-center gap-2">
                 <label for="pannaBaseInput" class="text-sm font-semibold text-stone-700 dark:text-stone-300 whitespace-nowrap">Panna Base (g):</label>
@@ -1735,166 +1749,121 @@
       if (!container) return;
 
       const g = Math.max(10, baseGrams);
-      // Numeri con la virgola, come nel resto del ricettario
-      const num = (n) => String(n).replace('.', ',');
+      // Arrotonda a un decimale e usa la virgola, come nel resto del ricettario
+      const num = (n) => String(Math.round(n * 10) / 10).replace('.', ',');
 
-      // Calcolo Dosi Proporzionali
-      const r1 = {
-        panna: g,
-        zucchero: Math.round(g * 0.10 * 10) / 10,
-        sale: "1 pizzico",
-        vaniglia: "1 cucchiaino estratto"
-      };
+      // Le 4 versioni (fruste elettriche). "nutri" = valori per 100 g.
+      const cards = [
+        {
+          title: "1. Panna Montata Classica",
+          badge: "Dolci al cucchiaio & decorazioni",
+          base: `${num(g)} g panna`,
+          ingredients: [
+            `<strong>Panna fresca 35%, a 4 °C:</strong> ${num(g)} g`,
+            `<strong>Zucchero a velo:</strong> ${num(g * 0.10)} g (10% del peso panna)`,
+            `<strong>Sale fino:</strong> 1 pizzico`,
+            `<strong>Vaniglia:</strong> ${num(g / 500)} ${num(g / 500) === '1' ? 'cucchiaino' : 'cucchiaini'} di estratto, oppure i semi di ${num(g / 1000)} bacca`
+          ],
+          steps: [
+            "Versa nella ciotola fredda la panna, il sale e la vaniglia.",
+            "Monta 30 secondi a velocità bassa, poi a velocità medio-alta.",
+            "Quando diventa schiumosa e comincia a lasciare le prime scie (circa 1 minuto), aggiungi lo zucchero a velo a cucchiaiate, senza fermare le fruste.",
+            "Prosegui fino al <strong>becco morbido</strong> per i dolci al cucchiaio, o fino al <strong>becco fermo</strong> per decorare. In tutto ci vogliono 3-5 minuti."
+          ],
+          why: "Lo zucchero si aggiunge dopo la prima schiuma, non all'inizio: così la panna prende più volume e l'amido dello zucchero a velo la stabilizza proprio quando la struttura si sta formando.",
+          nutri: ["342 kcal", "1,9 g", "12,5 g", "12,2 g", "31,5 g", "20,0 g", "11,5 g", "0,2 g"]
+        },
+        {
+          title: "2. Panna per Maritozzi",
+          badge: "Compatta & Tenuta Perfetta",
+          base: `Base ${num(g)} g`,
+          ingredients: [
+            `<strong>Panna fresca 35%, a 4 °C:</strong> ${num(g * 0.8)} g`,
+            `<strong>Mascarpone, a 4 °C:</strong> ${num(g * 0.2)} g`,
+            `<strong>Zucchero a velo:</strong> ${num(g * 0.10)} g`,
+            `<strong>Miele d'acacia o di zagara:</strong> ${num(g * 0.02)} g (liquido)`,
+            `<strong>Sale fino:</strong> 1 pizzico`,
+            `<strong>Facoltativa:</strong> scorza grattugiata di ${num(g / 1000)} arancia non trattata`
+          ],
+          steps: [
+            "Nella ciotola fredda lavora il mascarpone con lo zucchero a velo, il miele e il sale per 20-30 secondi a velocità bassa, solo finché è liscio.",
+            `Aggiungi ${num(g * 0.2)} g della panna e mescola a velocità bassa: il mascarpone si scioglie in una crema fluida, senza grumi.`,
+            "Unisci la panna rimanente e monta a velocità medio-alta fino al <strong>becco fermo</strong>: 2-4 minuti.",
+            "Se usi la scorza d'arancia, aggiungila negli ultimi secondi.",
+            "Trasferisci subito la panna nella sac à poche con bocchetta a stella e tienila in frigo fino al momento di farcire."
+          ],
+          why: "Con le fruste, il mascarpone messo a tocchetti insieme alla panna lascia piccoli grumi gialli: va prima ammorbidito con lo zucchero e un po' di panna. Il miele deve essere liquido; se è cristallizzato, scioglilo nel mascarpone al primo passaggio.",
+          nutri: ["362 kcal", "2,3 g", "14,0 g", "13,7 g", "33,1 g", "21,0 g", "12,1 g", "0,2 g"]
+        },
+        {
+          title: "3. Panna per Gelato e Semifreddi",
+          badge: "Semi-montata & Aerea",
+          base: `${num(g)} g panna`,
+          ingredients: [
+            `<strong>Panna fresca 35-38%, a 4 °C:</strong> ${num(g)} g`,
+            `<strong>Zucchero a velo:</strong> ${num(g * 0.08)} g`
+          ],
+          steps: [
+            "Versa la panna e lo zucchero a velo nella ciotola fredda.",
+            "Monta 30 secondi a velocità bassa, poi a velocità media (3 su 5).",
+            "Fermati alla <strong>semi-montata</strong>, quando le scie si richiudono lentamente: circa 1 minuto e 30 secondi – 2 minuti. Non arrivare al becco.",
+            "Incorporala alla base del semifreddo a mano, con una spatola, mescolando dal basso verso l'alto."
+          ],
+          why: "Zucchero a velo al posto del semolato: il semolato nella panna fredda si scioglie male e nel semifreddo lascia una sensazione granulosa (se vuoi usarlo comunque, mettilo all'inizio e monta a velocità bassa per un minuto intero). Il \"nastro\" vale per uova e zucchero, non per la panna: il segnale giusto sono le scie che si richiudono lentamente. Montata di più si incorpora male, fa grumi di grasso e nel freezer diventa burrosa.",
+          nutri: ["342 kcal", "1,9 g", "10,3 g", "10,1 g", "32,4 g", "20,6 g", "11,8 g", "0,1 g"]
+        },
+        {
+          title: "4. Panna al Mascarpone",
+          badge: "Ricca, Setosa & Avvolgente",
+          base: "Rapporto 1:1",
+          ingredients: [
+            `<strong>Mascarpone, a 4 °C:</strong> ${num(g)} g`,
+            `<strong>Panna fresca 35%, a 4 °C:</strong> ${num(g)} g`,
+            `<strong>Zucchero a velo:</strong> ${num(g * 0.24)} g (12% sul totale)`,
+            `<strong>Vaniglia Bourbon:</strong> semi di ${num(g / 1000)} bacca`,
+            `<strong>Sale fino:</strong> 1 pizzico`
+          ],
+          steps: [
+            "Nella ciotola fredda lavora il mascarpone con lo zucchero, la vaniglia e il sale a velocità bassa per 30 secondi, solo finché è liscio. Non di più.",
+            "Aggiungi la panna fredda in 3 volte, a velocità media. Aspetta che ogni parte sia assorbita prima di aggiungere la successiva.",
+            "Alza a velocità medio-alta e monta finché la crema è densa e lucida, con <strong>becco morbido</strong>: 2-3 minuti.",
+            "Fermati appena le fruste lasciano solchi netti."
+          ],
+          why: "Il mascarpone lavorato a lungo, o tiepido, \"impazzisce\": il grasso si separa e la crema diventa granulosa e acquosa. Per questo va lavorato pochissimo da solo, e la panna va aggiunta a più riprese.",
+          nutri: ["398 kcal", "3,0 g", "14,4 g", "14,1 g", "36,6 g", "23,3 g", "13,3 g", "0,1 g"]
+        }
+      ];
 
-      const r2 = {
-        panna: Math.round(g * 0.8 * 10) / 10,
-        mascarpone: Math.round(g * 0.2 * 10) / 10,
-        zucchero: Math.round(g * 0.10 * 10) / 10,
-        miele: Math.round(g * 0.02 * 10) / 10,
-        sale: "1 pizzico"
-      };
-
-      const r3 = {
-        panna: g,
-        zucchero: Math.round(g * 0.08 * 10) / 10
-      };
-
-      const r4 = {
-        mascarpone: g,
-        panna: g,
-        zucchero: Math.round(g * 0.24 * 10) / 10,
-        vaniglia: "Semi di 1/2 bacca Bourbon"
-      };
-
-      container.innerHTML = `
-        <!-- 1. PANNA CLASSICA -->
+      container.innerHTML = cards.map(c => `
         <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-6 shadow-sm">
           <div class="flex items-center justify-between border-b border-stone-100 dark:border-stone-800 pb-4 mb-4">
-            <h3 class="font-serif font-bold text-xl text-amber-700 dark:text-amber-400">1. Panna Montata Classica</h3>
-            <span class="text-xs font-semibold px-2.5 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 rounded-md">Dolci al cucchiaio & decorazioni</span>
+            <h3 class="font-serif font-bold text-xl text-amber-700 dark:text-amber-400">${c.title}</h3>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 rounded-md">${c.badge}</span>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
             <div class="bg-stone-50 dark:bg-stone-950 p-4 rounded-xl border border-stone-200/70 dark:border-stone-800">
-              <h4 class="font-bold text-xs uppercase tracking-wider text-amber-800 dark:text-amber-400 mb-3">Ingredienti Calcolati (${num(g)} g panna)</h4>
+              <h4 class="font-bold text-xs uppercase tracking-wider text-amber-800 dark:text-amber-400 mb-3">Ingredienti Calcolati (${c.base})</h4>
               <ul class="space-y-1.5 text-sm">
-                <li>• <strong>Panna fresca 35%:</strong> ${num(r1.panna)} g</li>
-                <li>• <strong>Zucchero a velo:</strong> ${num(r1.zucchero)} g (10% del peso panna)</li>
-                <li>• <strong>Sale fino:</strong> ${r1.sale}</li>
-                <li>• <strong>Vaniglia:</strong> ${r1.vaniglia}</li>
+                ${c.ingredients.map(i => `<li>• ${i}</li>`).join('')}
               </ul>
             </div>
             <div class="text-sm space-y-2 text-stone-700 dark:text-stone-300">
-              <h4 class="font-bold text-xs uppercase tracking-wider text-amber-800 dark:text-amber-400 mb-2">Procedimento Bimby TM5</h4>
-              <p>1. Raffredda boccale e farfalla a 4°C.</p>
-              <p>2. Inserisci la <strong>farfalla</strong>, versa tutti gli ingredienti ben freddi.</p>
-              <p>3. Monta a <strong>Velocità 3.5 SENZA TIMER</strong>.</p>
-              <p>4. Spegni subito quando il suono diventa sordo (circa 1:30 - 2:30 min).</p>
+              <h4 class="font-bold text-xs uppercase tracking-wider text-amber-800 dark:text-amber-400 mb-2">Procedimento con le fruste elettriche</h4>
+              ${c.steps.map((s, i) => `<p>${i + 1}. ${s}</p>`).join('')}
             </div>
           </div>
+          <p class="text-sm text-stone-600 dark:text-stone-400 mb-4"><strong>Perché:</strong> ${c.why}</p>
           <!-- Nutrizione -->
           <div class="text-xs bg-stone-100 dark:bg-stone-950 p-3 rounded-lg flex flex-wrap gap-4 text-stone-600 dark:text-stone-400">
-            <span><strong>Valori per 100g:</strong> 342 kcal</span>
-            <span>Prot: 2,1 g</span>
-            <span>Carb: 10,2 g (Zuccheri 10,2 g)</span>
-            <span>Grassi: 33,9 g (Sat: 21,5 g)</span>
+            <span><strong>Valori per 100 g:</strong> ${c.nutri[0]}</span>
+            <span>Prot: ${c.nutri[1]}</span>
+            <span>Carb: ${c.nutri[2]} (Zuccheri ${c.nutri[3]})</span>
+            <span>Grassi: ${c.nutri[4]} (Sat: ${c.nutri[5]}, Insat: ${c.nutri[6]})</span>
+            <span>Fibre: 0 g</span>
+            <span>Sale: ${c.nutri[7]}</span>
           </div>
         </div>
-
-        <!-- 2. PANNA PER MARITOZZI -->
-        <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-6 shadow-sm">
-          <div class="flex items-center justify-between border-b border-stone-100 dark:border-stone-800 pb-4 mb-4">
-            <h3 class="font-serif font-bold text-xl text-amber-700 dark:text-amber-400">2. Panna per Maritozzi</h3>
-            <span class="text-xs font-semibold px-2.5 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 rounded-md">Compatta & Tenuta Perfetta</span>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div class="bg-stone-50 dark:bg-stone-950 p-4 rounded-xl border border-stone-200/70 dark:border-stone-800">
-              <h4 class="font-bold text-xs uppercase tracking-wider text-amber-800 dark:text-amber-400 mb-3">Ingredienti Calcolati (Base ${num(g)} g)</h4>
-              <ul class="space-y-1.5 text-sm">
-                <li>• <strong>Panna fresca 35%:</strong> ${num(r2.panna)} g</li>
-                <li>• <strong>Mascarpone vaccino:</strong> ${num(r2.mascarpone)} g</li>
-                <li>• <strong>Zucchero a velo:</strong> ${num(r2.zucchero)} g</li>
-                <li>• <strong>Miele d'acacia:</strong> ${num(r2.miele)} g (lucentezza)</li>
-                <li>• <strong>Sale fino:</strong> ${r2.sale}</li>
-              </ul>
-            </div>
-            <div class="text-sm space-y-2 text-stone-700 dark:text-stone-300">
-              <h4 class="font-bold text-xs uppercase tracking-wider text-amber-800 dark:text-amber-400 mb-2">Procedimento Bimby TM5</h4>
-              <p>1. Boccale e ingredienti gelidi (4°C).</p>
-              <p>2. Inserisci <strong>farfalla</strong>, panna, mascarpone a tocchetti, zucchero, miele e sale.</p>
-              <p>3. Monta a <strong>Velocità 3.5</strong> per circa 2 minuti monitorando a vista.</p>
-              <p>4. Trasferisci in sac à poche con bocchetta a stella.</p>
-            </div>
-          </div>
-          <div class="text-xs bg-stone-100 dark:bg-stone-950 p-3 rounded-lg flex flex-wrap gap-4 text-stone-600 dark:text-stone-400">
-            <span><strong>Valori per 100g:</strong> 375 kcal</span>
-            <span>Prot: 2,5 g</span>
-            <span>Carb: 9,8 g (Zuccheri 9,5 g)</span>
-            <span>Grassi: 36,7 g (Sat: 23,2 g)</span>
-          </div>
-        </div>
-
-        <!-- 3. PANNA GELATO E SEMIFREDDI -->
-        <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-6 shadow-sm">
-          <div class="flex items-center justify-between border-b border-stone-100 dark:border-stone-800 pb-4 mb-4">
-            <h3 class="font-serif font-bold text-xl text-amber-700 dark:text-amber-400">3. Panna per Gelato e Semifreddi</h3>
-            <span class="text-xs font-semibold px-2.5 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 rounded-md">Semi-montata & Aerea</span>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div class="bg-stone-50 dark:bg-stone-950 p-4 rounded-xl border border-stone-200/70 dark:border-stone-800">
-              <h4 class="font-bold text-xs uppercase tracking-wider text-amber-800 dark:text-amber-400 mb-3">Ingredienti Calcolati (${num(g)} g panna)</h4>
-              <ul class="space-y-1.5 text-sm">
-                <li>• <strong>Panna fresca (35-38%):</strong> ${num(r3.panna)} g</li>
-                <li>• <strong>Zucchero semolato fine:</strong> ${num(r3.zucchero)} g</li>
-              </ul>
-            </div>
-            <div class="text-sm space-y-2 text-stone-700 dark:text-stone-300">
-              <h4 class="font-bold text-xs uppercase tracking-wider text-amber-800 dark:text-amber-400 mb-2">Procedimento Bimby TM5</h4>
-              <p>1. Posiziona la <strong>farfalla</strong> nel boccale freddo.</p>
-              <p>2. Versa panna freddissima e zucchero semolato.</p>
-              <p>3. Monta a <strong>Velocità 3</strong> per 1:00 - 1:15 minuti.</p>
-              <p>4. Spegni quando ha la consistenza di una spuma morbida (deve formare il nastro).</p>
-            </div>
-          </div>
-          <div class="text-xs bg-stone-100 dark:bg-stone-950 p-3 rounded-lg flex flex-wrap gap-4 text-stone-600 dark:text-stone-400">
-            <span><strong>Valori per 100g:</strong> 328 kcal</span>
-            <span>Prot: 2,2 g</span>
-            <span>Carb: 8,2 g (Zuccheri 8,2 g)</span>
-            <span>Grassi: 32,2 g (Sat: 20,4 g)</span>
-          </div>
-        </div>
-
-        <!-- 4. PANNA AL MASCARPONE -->
-        <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-6 shadow-sm">
-          <div class="flex items-center justify-between border-b border-stone-100 dark:border-stone-800 pb-4 mb-4">
-            <h3 class="font-serif font-bold text-xl text-amber-700 dark:text-amber-400">4. Panna al Mascarpone</h3>
-            <span class="text-xs font-semibold px-2.5 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 rounded-md">Ricca, Setosa & Avvolgente</span>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div class="bg-stone-50 dark:bg-stone-950 p-4 rounded-xl border border-stone-200/70 dark:border-stone-800">
-              <h4 class="font-bold text-xs uppercase tracking-wider text-amber-800 dark:text-amber-400 mb-3">Ingredienti Calcolati (Rapporto 1:1)</h4>
-              <ul class="space-y-1.5 text-sm">
-                <li>• <strong>Mascarpone di alta qualità:</strong> ${num(r4.mascarpone)} g</li>
-                <li>• <strong>Panna fresca 35%:</strong> ${num(r4.panna)} g</li>
-                <li>• <strong>Zucchero a velo:</strong> ${num(r4.zucchero)} g</li>
-                <li>• <strong>Vaniglia:</strong> ${r4.vaniglia}</li>
-              </ul>
-            </div>
-            <div class="text-sm space-y-2 text-stone-700 dark:text-stone-300">
-              <h4 class="font-bold text-xs uppercase tracking-wider text-amber-800 dark:text-amber-400 mb-2">Procedimento Bimby TM5</h4>
-              <p>1. Inserisci la <strong>farfalla</strong> nel boccale freddo con mascarpone, zucchero e vaniglia.</p>
-              <p>2. Lavora 30 sec a <strong>Velocità 3</strong>.</p>
-              <p>3. A <strong>Velocità 3.5</strong>, versa la panna a filo dal foro del coperchio.</p>
-              <p>4. Monta per circa 1:30 - 2:00 min fino ad ottenere una crema densa e lucida.</p>
-            </div>
-          </div>
-          <div class="text-xs bg-stone-100 dark:bg-stone-950 p-3 rounded-lg flex flex-wrap gap-4 text-stone-600 dark:text-stone-400">
-            <span><strong>Valori per 100g:</strong> 410 kcal</span>
-            <span>Prot: 2,8 g</span>
-            <span>Carb: 9,5 g (Zuccheri 9,2 g)</span>
-            <span>Grassi: 41,1 g (Sat: 26,1 g)</span>
-          </div>
-        </div>
-      `;
+      `).join('');
     }
 
     // STATO DELL'APPLICAZIONE E INIZIALIZZAZIONE
